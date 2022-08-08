@@ -1,0 +1,25 @@
+{
+  "name": "daybreak-cursor",
+  "version": "1.0.0",
+  "description": "Experimentation on cursor for website",
+  "main": "index.js",
+  "scripts": {
+    "start": "parcel src/index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alvinleung/daybreak-cursor.git"
+  },
+  "author": "Alvin Leung",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alvinleung/daybreak-cursor/issues"
+  },
+  "homepage": "https://github.com/alvinleung/daybreak-cursor#readme",
+  "dependencies": {
+    "typescript": "^4.7.4"
+  },
+  "devDependencies": {
+    "parcel": "^2.7.0"
+  }
+}
