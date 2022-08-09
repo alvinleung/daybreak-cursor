@@ -1,4 +1,4 @@
-import { stylesheet } from "./animation";
+import { stylesheet } from "./stylesheet";
 
 interface CursorInfo {
   elm: HTMLDivElement;
@@ -37,7 +37,7 @@ function createCursorElements(): HTMLDivElement {
     top: "0px",
     pointerEvents: "none",
     transitionProperty: "width height",
-    transitionDuration: ".1s",
+    transitionDuration: ".2s",
     transitionTimingFunction: "cubic-bezier(.04,.53,.44,1)",
   });
 
@@ -73,6 +73,10 @@ function setupParagraphHover({
 
   return () => {
     // cleanup
+    allText.forEach((elm) => {
+      elm.removeEventListener("pointerenter", handlePointerEnter);
+      elm.removeEventListener("pointerleave", handlePointerLeave);
+    });
   };
 }
 
@@ -114,6 +118,7 @@ function createCursor(): CursorInfo {
 
   function destroyCursor(cursorInfo: CursorInfo) {
     document.body.removeChild(cursorInfo.elm);
+    cleanupTextCursor();
     window.removeEventListener("pointermove", handleMouseMove);
   }
 
