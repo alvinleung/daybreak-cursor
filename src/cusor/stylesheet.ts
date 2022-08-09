@@ -1,3 +1,5 @@
+import { Partial } from "./cursor-util";
+
 type TransformationConfig = {
   x: number;
   y: number;
@@ -9,9 +11,7 @@ type TransformationConfig = {
   rotateY: number;
   rotateZ: number;
 };
-type Partial<T> = {
-  [P in keyof T]?: T[P];
-};
+
 type CSSStyleConfig = Partial<CSSStyleDeclaration> &
   Partial<TransformationConfig>;
 

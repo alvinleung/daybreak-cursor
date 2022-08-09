@@ -1,5 +1,5 @@
-import { createCursor } from "./cursor";
+import { setupCursor } from "./cusor/cursor";
 
 window.addEventListener("DOMContentLoaded", () => {
-  const cursorInfo = createCursor();
+  const [cursorState, cleanupCursor] = setupCursor();
 });
