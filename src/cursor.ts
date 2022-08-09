@@ -4,6 +4,7 @@ interface CursorInfo {
   elm: HTMLDivElement;
   x: number;
   y: number;
+  hidden: boolean;
   width: number;
   height: number;
 }
@@ -36,7 +37,7 @@ function createCursorElements(): HTMLDivElement {
     left: "0px",
     top: "0px",
     pointerEvents: "none",
-    transitionProperty: "width height",
+    transitionProperty: "width,height,transform,opacity",
     transitionDuration: ".2s",
     transitionTimingFunction: "cubic-bezier(.04,.53,.44,1)",
   });
@@ -47,7 +48,7 @@ function createCursorElements(): HTMLDivElement {
   return baseElm;
 }
 
-function setupParagraphHover({
+function detectParagraphHover({
   onMouseEnter = (target: HTMLElement, lineHeight: number) => {},
   onMouseLeave = (target: HTMLElement) => {},
 }) {
@@ -58,7 +59,6 @@ function setupParagraphHover({
     // handle pointer enter
     const elm = e.target as HTMLElement;
     const paragraphLineHeight = getComputedStyle(elm).fontSize;
-    console.log(paragraphLineHeight);
     onMouseEnter(elm, parseInt(paragraphLineHeight));
   }
   function handlePointerLeave(e: PointerEvent) {
@@ -80,21 +80,43 @@ function setupParagraphHover({
   };
 }
 
+function detectOffscreen({
+  onEnterScreen = (e: MouseEvent) => {},
+  onExitScreen = (e: MouseEvent) => {},
+}) {
+  const handlePointerEnter = (e: MouseEvent) => {
+    onEnterScreen(e);
+  };
+  const handlePointerLeave = (e: MouseEvent) => {
+    onExitScreen(e);
+  };
+
+  document.addEventListener("pointerenter", handlePointerEnter);
+  document.addEventListener("pointerleave", handlePointerLeave);
+
+  return () => {
+    document.removeEventListener("pointerenter", handlePointerEnter);
+    document.removeEventListener("pointerleave", handlePointerLeave);
+  };
+}
+
 function createCursor(): CursorInfo {
   const baseElm = createCursorElements();
+
   const DEFAULT_SIZE = 10;
   const DEFAULT_SIZE_TEXT = 2;
 
   const cursorInfo = {
     x: 0,
     y: 0,
+    hidden: false,
     width: DEFAULT_SIZE,
     height: DEFAULT_SIZE,
     elm: baseElm,
     destroyCursor: destroyCursor,
   };
 
-  const cleanupTextCursor = setupParagraphHover({
+  const cleanupTextCursor = detectParagraphHover({
     onMouseEnter: (target, lineHeight) => {
       cursorInfo.width = DEFAULT_SIZE_TEXT;
       cursorInfo.height = lineHeight;
@@ -103,6 +125,22 @@ function createCursor(): CursorInfo {
     onMouseLeave: () => {
       cursorInfo.height = DEFAULT_SIZE;
       cursorInfo.width = DEFAULT_SIZE;
+      updateCursorDOM(cursorInfo);
+    },
+  });
+
+  const cleanupOffscreenDetector = detectOffscreen({
+    onEnterScreen: (e: MouseEvent) => {
+      cursorInfo.x = e.clientX;
+      cursorInfo.y = e.clientY;
+      // const currentTransitionProperty = baseElm.style.transitionProperty;
+      // baseElm.style.transitionProperty = "";
+      cursorInfo.hidden = false;
+      updateCursorDOM(cursorInfo);
+    },
+    onExitScreen: () => {
+      // console.log("exit screen");
+      cursorInfo.hidden = true;
       updateCursorDOM(cursorInfo);
     },
   });
@@ -119,17 +157,24 @@ function createCursor(): CursorInfo {
   function destroyCursor(cursorInfo: CursorInfo) {
     document.body.removeChild(cursorInfo.elm);
     cleanupTextCursor();
+    cleanupOffscreenDetector();
     window.removeEventListener("pointermove", handleMouseMove);
   }
 
   return cursorInfo;
 }
 
-const updateCursorDOM: CursorDOMRenderer = (cursorInfo: CursorInfo) => {
-  const { elm, x, y, width, height } = cursorInfo;
-
+const updateCursorDOM: CursorDOMRenderer = ({
+  elm,
+  x,
+  y,
+  width,
+  height,
+  hidden,
+}: CursorInfo) => {
   stylesheet(elm, {
     backgroundColor: `#F25410`,
+    opacity: hidden ? "0" : "1",
     width: `${width}px`,
     height: `${height}px`,
     transform: `translate(${x - width / 2}px,${y - height / 2}px)`,
