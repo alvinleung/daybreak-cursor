@@ -4,12 +4,21 @@ interface CursorInfo {
   elm: HTMLDivElement;
   x: number;
   y: number;
+  prevX: number;
+  prevY: number;
+  velX: number;
+  velY: number;
+  accelX: number;
+  accelY: number;
   hidden: boolean;
   width: number;
   height: number;
 }
 
 type CursorDOMRenderer = (cursorInfo: CursorInfo) => void;
+
+const clamp = (num: number, min: number, max: number) =>
+  Math.min(Math.max(num, min), max);
 
 function createCursorElements(): HTMLDivElement {
   // hide cursor
@@ -38,7 +47,7 @@ function createCursorElements(): HTMLDivElement {
     top: "0px",
     pointerEvents: "none",
     transitionProperty: "width,height,transform,opacity",
-    transitionDuration: ".2s",
+    transitionDuration: ".2s,.2s,.1s,.2s",
     transitionTimingFunction: "cubic-bezier(.04,.53,.44,1)",
   });
 
@@ -109,8 +118,12 @@ function createCursor(): CursorInfo {
   const cursorInfo = {
     x: 0,
     y: 0,
-    velx: 0,
-    vely: 0,
+    prevX: 0,
+    prevY: 0,
+    velX: 0,
+    velY: 0,
+    accelX: 0,
+    accelY: 0,
     hidden: false,
     width: DEFAULT_SIZE,
     height: DEFAULT_SIZE,
@@ -148,8 +161,12 @@ function createCursor(): CursorInfo {
   window.addEventListener("pointermove", handleMouseMove);
 
   function handleMouseMove(e: MouseEvent) {
+    cursorInfo.prevX = cursorInfo.x;
+    cursorInfo.prevY = cursorInfo.y;
     cursorInfo.x = e.clientX;
     cursorInfo.y = e.clientY;
+    cursorInfo.velX = cursorInfo.x - cursorInfo.prevX;
+    cursorInfo.velY = cursorInfo.y - cursorInfo.prevY;
     updateCursorDOM(cursorInfo);
   }
 
@@ -167,6 +184,8 @@ const updateCursorDOM: CursorDOMRenderer = ({
   elm,
   x,
   y,
+  velX,
+  velY,
   width,
   height,
   hidden,
@@ -174,12 +193,14 @@ const updateCursorDOM: CursorDOMRenderer = ({
   stylesheet(elm, {
     backgroundColor: `#F25410`,
     opacity: hidden ? "0" : "1",
-    scaleX: hidden ? "0" : "1",
-    scaleY: hidden ? "0" : "1",
+    scaleX: hidden ? 0 : 1,
+    scaleY: hidden ? 0 : 1,
     width: `${width}px`,
     height: `${height}px`,
-    x: `${x - width / 2}px`,
-    y: `${y - height / 2}px`,
+    skewX: clamp(velX * 4, -50, 50),
+    skewY: clamp(velY * 4, -50, 50),
+    x: x - width / 2,
+    y: y - height / 2,
   });
 };
 

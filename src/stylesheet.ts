@@ -1,11 +1,13 @@
 type TransformationConfig = {
-  x: string;
-  y: string;
-  scaleX: string;
-  scaleY: string;
-  rotateX: string;
-  rotateY: string;
-  rotateZ: string;
+  x: number;
+  y: number;
+  scaleX: number;
+  scaleY: number;
+  skewX: number;
+  skewY: number;
+  rotateX: number;
+  rotateY: number;
+  rotateZ: number;
 };
 type Partial<T> = {
   [P in keyof T]?: T[P];
@@ -23,14 +25,26 @@ function emptyWhenUndefined(
 
 export function stylesheet(elm: HTMLElement, stylesheet: CSSStyleConfig) {
   // process all x, y, scaleX, scaleY
-  const { x, y, scaleX, scaleY, rotateX, rotateY, rotateZ, ...pureCSSStyle } =
-    stylesheet;
+  const {
+    x,
+    y,
+    scaleX,
+    scaleY,
+    rotateX,
+    rotateY,
+    rotateZ,
+    skewX,
+    skewY,
+    ...pureCSSStyle
+  } = stylesheet;
 
   const transformStr = [
-    emptyWhenUndefined`translateX(${x})`,
-    emptyWhenUndefined`translateY(${y})`,
+    emptyWhenUndefined`translateX(${x}px)`,
+    emptyWhenUndefined`translateY(${y}px)`,
     emptyWhenUndefined`scaleX(${scaleX})`,
     emptyWhenUndefined`scaleY(${scaleY})`,
+    emptyWhenUndefined`skewX(${skewX}deg)`,
+    emptyWhenUndefined`skewY(${skewY}deg)`,
     emptyWhenUndefined`rotateX(${rotateX})`,
     emptyWhenUndefined`rotateY(${rotateY})`,
     emptyWhenUndefined`rotateZ(${rotateZ})`,
