@@ -109,6 +109,8 @@ function createCursor(): CursorInfo {
   const cursorInfo = {
     x: 0,
     y: 0,
+    velx: 0,
+    vely: 0,
     hidden: false,
     width: DEFAULT_SIZE,
     height: DEFAULT_SIZE,
@@ -133,13 +135,10 @@ function createCursor(): CursorInfo {
     onEnterScreen: (e: MouseEvent) => {
       cursorInfo.x = e.clientX;
       cursorInfo.y = e.clientY;
-      // const currentTransitionProperty = baseElm.style.transitionProperty;
-      // baseElm.style.transitionProperty = "";
       cursorInfo.hidden = false;
       updateCursorDOM(cursorInfo);
     },
     onExitScreen: () => {
-      // console.log("exit screen");
       cursorInfo.hidden = true;
       updateCursorDOM(cursorInfo);
     },
@@ -175,9 +174,12 @@ const updateCursorDOM: CursorDOMRenderer = ({
   stylesheet(elm, {
     backgroundColor: `#F25410`,
     opacity: hidden ? "0" : "1",
+    scaleX: hidden ? "0" : "1",
+    scaleY: hidden ? "0" : "1",
     width: `${width}px`,
     height: `${height}px`,
-    transform: `translate(${x - width / 2}px,${y - height / 2}px)`,
+    x: `${x - width / 2}px`,
+    y: `${y - height / 2}px`,
   });
 };
 
