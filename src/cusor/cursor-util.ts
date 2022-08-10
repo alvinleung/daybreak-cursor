@@ -23,15 +23,15 @@ export function createHoverState(
   }
 
   allText.forEach((elm) => {
-    elm.addEventListener("pointerenter", handlePointerEnter);
-    elm.addEventListener("pointerleave", handlePointerLeave);
+    elm.addEventListener("pointerover", handlePointerEnter, true);
+    elm.addEventListener("pointerout", handlePointerLeave, true);
   });
 
   return () => {
     // cleanup
     allText.forEach((elm) => {
-      elm.removeEventListener("pointerenter", handlePointerEnter);
-      elm.removeEventListener("pointerleave", handlePointerLeave);
+      elm.removeEventListener("pointerover", handlePointerEnter, true);
+      elm.removeEventListener("pointerout", handlePointerLeave, true);
     });
   };
 }

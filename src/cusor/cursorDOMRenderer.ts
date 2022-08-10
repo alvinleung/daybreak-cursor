@@ -108,7 +108,6 @@ export const updateCursorDOM: CursorDOMRenderer = ({
   const cursorPosY = y - height / 2;
 
   const BIG_TARGET_HOVER_SCALE = 4;
-  const SMALL_TARGET_HOVER_PADDING = 8;
 
   const highlightElmBox = (() => {
     if (isHoveringTargetSmall && hoverTarget.bounds) {

@@ -34,6 +34,7 @@ export interface CursorState {
   accelX: number;
   accelY: number;
   hoverTarget: HoverTarget | null;
+  isHoveringText: boolean;
   hidden: boolean;
   width: number;
   height: number;
@@ -80,6 +81,7 @@ export function setupCursor(): [CursorState, CursorCleanup] {
       accelY: 0,
       hoverTarget: null,
       hidden: false,
+      isHoveringText: false,
       width: DEFAULT_SIZE,
       height: DEFAULT_SIZE,
       DOMElements: allCursorElm,
