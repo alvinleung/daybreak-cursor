@@ -38,9 +38,10 @@ export function createCursorElements(): [CursorDOMElements, () => void] {
     left: "0px",
     top: "0px",
     pointerEvents: "none",
+    opacity: "0",
     transitionProperty: "width,height,transform,opacity",
     transitionDuration: ".2s,.2s,.1s,.2s",
-    transitionTimingFunction: "cubic-bezier(.04,.53,.44,1)",
+    transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
   });
 
   const highlightElm = document.createElement("div");
@@ -49,10 +50,11 @@ export function createCursorElements(): [CursorDOMElements, () => void] {
     left: "0px",
     top: "0px",
     pointerEvents: "none",
-    opacity: "1",
+    opacity: ".5",
     transitionProperty: "width,height,transform,opacity",
-    transitionDuration: ".2s,.2s,.1s,.2s",
-    transitionTimingFunction: "cubic-bezier(.04,.53,.44,1)",
+    transitionDuration: ".2s,.2s,.2s,.2s",
+    transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
+    backgroundBlendMode: "multiply",
   });
 
   document.body.appendChild(baseWrapper);
@@ -83,8 +85,13 @@ export const updateCursorDOM: CursorDOMRenderer = ({
   hidden,
   hoverTarget,
 }: CursorState) => {
-  const maxSkewAmount = hoverTarget?.type === HoverTargetType.TEXT ? 5 : 50;
-  const maxSkewSensitivity = hoverTarget?.type === HoverTargetType.TEXT ? 2 : 4;
+  const isHoveringText = hoverTarget?.type === HoverTargetType.TEXT;
+  const isHoveringTargetBig = hoverTarget?.type === HoverTargetType.TARGET_BIG;
+  const isHoveringTargetSmall =
+    hoverTarget?.type === HoverTargetType.TARGET_SMALL;
+
+  const maxSkewAmount = isHoveringText ? 5 : 50;
+  const maxSkewSensitivity = isHoveringText ? 2 : 4;
 
   const skewXAmount = clamp(
     velX * maxSkewSensitivity,
@@ -96,18 +103,88 @@ export const updateCursorDOM: CursorDOMRenderer = ({
     -maxSkewAmount,
     maxSkewAmount
   );
-  requestAnimationFrame(() =>
+
+  const cursorPosX = x - width / 2;
+  const cursorPosY = y - height / 2;
+
+  const BIG_TARGET_HOVER_SCALE = 4;
+  const SMALL_TARGET_HOVER_PADDING = 8;
+
+  const highlightElmBox = (() => {
+    if (isHoveringTargetSmall && hoverTarget.bounds) {
+      const posX = hoverTarget.bounds.x || cursorPosX;
+      const posY = hoverTarget.bounds.y || cursorPosY;
+
+      const paddingX = hoverTarget.bounds.width * 0.05;
+      const paddingY = hoverTarget.bounds.height * 0.05;
+
+      const boxWidth = hoverTarget.bounds.width + paddingX * 2 || width;
+      const boxHeight = hoverTarget.bounds.height + paddingY * 2 || height;
+
+      const offsetX =
+        (posX + hoverTarget.bounds.width / 2 + paddingX * 2 - x) * 0.1;
+      const offsetY =
+        (posY + hoverTarget.bounds.height / 2 + paddingY * 2 - y) * 0.1;
+      // set it
+      return {
+        x: posX - paddingX - offsetX,
+        y: posY - paddingY - offsetY,
+        width: boxWidth,
+        height: boxHeight,
+      };
+    }
+
+    if (isHoveringTargetBig) {
+      const boxWidth = width * BIG_TARGET_HOVER_SCALE;
+      const boxHeight = height * BIG_TARGET_HOVER_SCALE;
+
+      return {
+        x: x - boxWidth / 2,
+        y: y - boxHeight / 2,
+        width: boxWidth,
+        height: boxHeight,
+      };
+    }
+
+    return { x: cursorPosX, y: cursorPosY, width: width, height: height };
+  })();
+
+  const cursorScale = (() => {
+    if (hidden) {
+      return 0;
+    }
+    if (isHoveringTargetBig) {
+      return 0.5;
+    }
+    if (isHoveringTargetSmall) {
+      return 0;
+    }
+    return 1;
+  })();
+
+  requestAnimationFrame(() => {
+    stylesheet(DOMElements.highlightElm, {
+      backgroundColor: `#F25410`,
+      opacity: isHoveringTargetBig || isHoveringTargetSmall ? ".4" : "0",
+      x: highlightElmBox.x,
+      y: highlightElmBox.y,
+      skewX: skewXAmount / 3,
+      skewY: skewYAmount / 3,
+      width: `${highlightElmBox.width}px`,
+      height: `${highlightElmBox.height}px`,
+    });
+
     stylesheet(DOMElements.cursorElm, {
       backgroundColor: `#F25410`,
       opacity: hidden ? "0" : "1",
-      scaleX: hidden ? 0 : 1,
-      scaleY: hidden ? 0 : 1,
+      scaleX: cursorScale,
+      scaleY: cursorScale,
       width: `${width}px`,
       height: `${height}px`,
       skewX: skewXAmount,
       skewY: skewYAmount,
-      x: x - width / 2,
-      y: y - height / 2,
-    })
-  );
+      x: cursorPosX,
+      y: cursorPosY,
+    });
+  });
 };

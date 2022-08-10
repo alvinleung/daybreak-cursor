@@ -14,8 +14,8 @@ import {
 
 export enum HoverTargetType {
   TEXT, // for paragraph
-  TEXT_LINK, // for text link
-  AREA, // for an area like a photo
+  TARGET_BIG, // for an area like a photo
+  TARGET_SMALL, // for text link
 }
 
 export interface HoverTarget {
@@ -108,9 +108,35 @@ export function setupCursor(): [CursorState, CursorCleanup] {
     },
   });
 
-  const cleanupLink = createHoverState("a", {
-    onMouseEnter: (target) => {},
-    onMouseLeave: (target) => {},
+  const cleanupLink = createHoverState(".hover-target-small, a", {
+    onMouseEnter: (target) => {
+      const bounds = target.getBoundingClientRect();
+      mutateCursorState({
+        hoverTarget: {
+          type: HoverTargetType.TARGET_SMALL,
+          bounds: bounds,
+        },
+      });
+    },
+    onMouseLeave: (target) => {
+      mutateCursorState({ hoverTarget: null });
+    },
+  });
+
+  const cleanupLinkArea = createHoverState(".hover-target-big", {
+    onMouseEnter: (target) => {
+      const bounds = target.getBoundingClientRect();
+
+      mutateCursorState({
+        hoverTarget: {
+          type: HoverTargetType.TARGET_BIG,
+          bounds: bounds,
+        },
+      });
+    },
+    onMouseLeave: (target) => {
+      mutateCursorState({ hoverTarget: null });
+    },
   });
 
   const cleanupOffscreenDetector = detectOffscreen({
@@ -160,6 +186,7 @@ export function setupCursor(): [CursorState, CursorCleanup] {
     removeAllCursorElm();
     cleanupTextCursor();
     cleanupLink();
+    cleanupLinkArea();
     cleanupOffscreenDetector();
     cleanupMouseMoveListeners();
   }
