@@ -122,10 +122,13 @@ export const updateCursorDOM: CursorDOMRenderer = ({
       const boxWidth = hoverTarget.bounds.width + paddingX * 2 || width;
       const boxHeight = hoverTarget.bounds.height + paddingY * 2 || height;
 
+      const sensitivityFactor = 0.2;
       const offsetX =
-        (posX + hoverTarget.bounds.width / 2 + paddingX * 2 - x) * 0.1;
+        (posX + hoverTarget.bounds.width / 2 + paddingX * 2 - x) *
+        sensitivityFactor;
       const offsetY =
-        (posY + hoverTarget.bounds.height / 2 + paddingY * 2 - y) * 0.1;
+        (posY + hoverTarget.bounds.height / 2 + paddingY * 2 - y) *
+        sensitivityFactor;
       // set it
       return {
         x: posX - paddingX - offsetX,
