@@ -84,11 +84,13 @@ export const updateCursorDOM: CursorDOMRenderer = ({
   height,
   hidden,
   hoverTarget,
+  isMouseDown,
 }: CursorState) => {
   const isHoveringText = hoverTarget?.type === HoverTargetType.TEXT;
   const isHoveringTargetBig = hoverTarget?.type === HoverTargetType.TARGET_BIG;
   const isHoveringTargetSmall =
     hoverTarget?.type === HoverTargetType.TARGET_SMALL;
+  const isHovering = isHoveringTargetBig || isHoveringTargetSmall;
 
   const maxSkewAmount = isHoveringText ? 5 : 50;
   const maxSkewSensitivity = isHoveringText ? 2 : 4;
@@ -169,6 +171,8 @@ export const updateCursorDOM: CursorDOMRenderer = ({
       y: highlightElmBox.y,
       skewX: skewXAmount / 3,
       skewY: skewYAmount / 3,
+      scaleX: isMouseDown ? 0.9 : 1,
+      scaleY: isMouseDown ? 0.9 : 1,
       width: `${highlightElmBox.width}px`,
       height: `${highlightElmBox.height}px`,
     });
@@ -176,8 +180,8 @@ export const updateCursorDOM: CursorDOMRenderer = ({
     stylesheet(DOMElements.cursorElm, {
       backgroundColor: `#F25410`,
       opacity: hidden ? "0" : "1",
-      scaleX: cursorScale,
-      scaleY: cursorScale,
+      scaleX: isMouseDown && !isHovering ? 0.92 : cursorScale,
+      scaleY: isMouseDown && !isHovering ? 0.92 : cursorScale,
       width: `${width}px`,
       height: `${height}px`,
       skewX: skewXAmount,

@@ -5,6 +5,7 @@ import {
   createHoverState,
   detectOffscreen,
   observeMouseMove,
+  setupIsMouseDown,
 } from "./cursor-util";
 import {
   createCursorElements,
@@ -34,7 +35,7 @@ export interface CursorState {
   accelX: number;
   accelY: number;
   hoverTarget: HoverTarget | null;
-  isHoveringText: boolean;
+  isMouseDown: boolean;
   hidden: boolean;
   width: number;
   height: number;
@@ -81,7 +82,7 @@ export function setupCursor(): [CursorState, CursorCleanup] {
       accelY: 0,
       hoverTarget: null,
       hidden: false,
-      isHoveringText: false,
+      isMouseDown: false,
       width: DEFAULT_SIZE,
       height: DEFAULT_SIZE,
       DOMElements: allCursorElm,
@@ -141,6 +142,15 @@ export function setupCursor(): [CursorState, CursorCleanup] {
     },
   });
 
+  const cleaupIsMouseDown = setupIsMouseDown({
+    onMouseDown: () => {
+      mutateCursorState({ isMouseDown: true });
+    },
+    onMouseUp: () => {
+      mutateCursorState({ isMouseDown: false });
+    },
+  });
+
   const cleanupOffscreenDetector = detectOffscreen({
     onEnterScreen: (e: MouseEvent) => {
       mutateCursorState({
@@ -191,6 +201,7 @@ export function setupCursor(): [CursorState, CursorCleanup] {
     cleanupLinkArea();
     cleanupOffscreenDetector();
     cleanupMouseMoveListeners();
+    cleaupIsMouseDown();
   }
 
   return [cursorState, cleanup];

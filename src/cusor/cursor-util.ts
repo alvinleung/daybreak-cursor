@@ -89,3 +89,15 @@ export function observeMouseMove({
     window.removeEventListener("pointermove", handleMouseMove);
   };
 }
+
+export function setupIsMouseDown({
+  onMouseDown = () => {},
+  onMouseUp = () => {},
+}) {
+  window.addEventListener("mousedown", onMouseDown);
+  window.addEventListener("mouseup", onMouseUp);
+  return () => {
+    window.removeEventListener("mousedown", onMouseDown);
+    window.removeEventListener("mosueup", onMouseUp);
+  };
+}
