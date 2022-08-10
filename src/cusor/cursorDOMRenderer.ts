@@ -161,7 +161,7 @@ export const updateCursorDOM: CursorDOMRenderer = ({
       return 0.5;
     }
     if (isHoveringTargetSmall) {
-      return 0;
+      return 0.3;
     }
     return 1;
   })();

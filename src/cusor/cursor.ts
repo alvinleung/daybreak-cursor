@@ -115,6 +115,8 @@ export function setupCursor(): [CursorState, CursorCleanup] {
     onMouseEnter: (target) => {
       const bounds = target.getBoundingClientRect();
       mutateCursorState({
+        width: DEFAULT_SIZE,
+        height: DEFAULT_SIZE,
         hoverTarget: {
           type: HoverTargetType.TARGET_SMALL,
           bounds: bounds,
