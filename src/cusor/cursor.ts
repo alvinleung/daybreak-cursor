@@ -136,7 +136,7 @@ export function setupCursor(): [CursorTargetRefresh, CursorCleanup] {
       },
     });
 
-    const cleanupLinkArea = createHoverState(".hover-target-big", {
+    const cleanupLinkArea = createHoverState(".hover-target-big, .project", {
       onMouseEnter: (target) => {
         const bounds = target.getBoundingClientRect();
 
