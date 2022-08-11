@@ -60,7 +60,7 @@ export function createCursorElements(): [CursorDOMElements, () => void] {
     pointerEvents: "none",
     opacity: ".5",
     willChange: "width,height,transform,opacity,border-radius",
-    transitionProperty: "width,height,transform,opacity",
+    transitionProperty: "width,height,transform,opacity,border-radius",
     transitionDuration: ".3s,.3s,.2s,.2s,.2s",
     transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
     // backgroundColor: `#F25410`,
