@@ -91,28 +91,30 @@ export function setupCursor(): [CursorTargetRefresh, CursorCleanup] {
     updateCursorDOM
   );
 
-  const cleanupTextCursor = createHoverState("p,h1,h2,h3", {
-    onMouseEnter: (target) => {
-      const lineHeight = parseInt(getComputedStyle(target).fontSize);
-      mutateCursorState({
-        width: DEFAULT_SIZE_TEXT,
-        height: lineHeight,
-        hoverTarget: {
-          type: HoverTargetType.TEXT,
-          bounds: null,
-        },
-      });
-    },
-    onMouseLeave: () => {
-      mutateCursorState({
-        width: DEFAULT_SIZE,
-        height: DEFAULT_SIZE,
-        hoverTarget: null,
-      });
-    },
-  });
-
   const setupHoverStates = () => {
+    const cleanupTextCursor = createHoverState(
+      ".hover-target-text,p,h1,h2,h3",
+      {
+        onMouseEnter: (target) => {
+          const lineHeight = parseInt(getComputedStyle(target).fontSize);
+          mutateCursorState({
+            width: DEFAULT_SIZE_TEXT,
+            height: lineHeight,
+            hoverTarget: {
+              type: HoverTargetType.TEXT,
+              bounds: null,
+            },
+          });
+        },
+        onMouseLeave: () => {
+          mutateCursorState({
+            width: DEFAULT_SIZE,
+            height: DEFAULT_SIZE,
+            hoverTarget: null,
+          });
+        },
+      }
+    );
     const cleanupLink = createHoverState(".hover-target-small, a", {
       onMouseEnter: (target) => {
         const bounds = target.getBoundingClientRect();
@@ -153,6 +155,7 @@ export function setupCursor(): [CursorTargetRefresh, CursorCleanup] {
     return () => {
       cleanupLinkArea();
       cleanupLink();
+      cleanupTextCursor();
       mutateCursorState({
         width: DEFAULT_SIZE,
         height: DEFAULT_SIZE,
@@ -221,7 +224,6 @@ export function setupCursor(): [CursorTargetRefresh, CursorCleanup] {
 
   function cleanup() {
     removeAllCursorElm();
-    cleanupTextCursor();
     cleanupHoverState();
     cleanupOffscreenDetector();
     cleanupMouseMoveListeners();
