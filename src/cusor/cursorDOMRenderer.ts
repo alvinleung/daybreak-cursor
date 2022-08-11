@@ -51,7 +51,7 @@ export function createCursorElements(): [CursorDOMElements, () => void] {
   });
 
   const highlightElm = document.createElement("div");
-  cursorElm.setAttribute("persist-id", "cursor-highlight");
+  highlightElm.setAttribute("persist-id", "cursor-highlight");
   stylesheet(highlightElm, {
     position: "fixed",
     left: "0px",
