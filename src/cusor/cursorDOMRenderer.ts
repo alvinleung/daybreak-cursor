@@ -15,6 +15,7 @@ export interface CursorDOMElements {
 export function createCursorElements(): [CursorDOMElements, () => void] {
   // hide cursor
   const baseWrapper = document.createElement("div");
+  baseWrapper.classList.add("persist");
 
   stylesheet(baseWrapper, {
     position: "fixed",
@@ -33,6 +34,7 @@ export function createCursorElements(): [CursorDOMElements, () => void] {
 
   // the base element of the cursor
   const cursorElm = document.createElement("div");
+  cursorElm.classList.add("persist");
   stylesheet(cursorElm, {
     position: "fixed",
     left: "0px",
@@ -46,6 +48,7 @@ export function createCursorElements(): [CursorDOMElements, () => void] {
   });
 
   const highlightElm = document.createElement("div");
+  highlightElm.classList.add("persist");
   stylesheet(highlightElm, {
     position: "fixed",
     left: "0px",
