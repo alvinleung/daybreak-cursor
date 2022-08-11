@@ -42,6 +42,7 @@ export function createCursorElements(): [CursorDOMElements, () => void] {
     transitionProperty: "width,height,transform,opacity",
     transitionDuration: ".2s,.2s,.1s,.2s",
     transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
+    zIndex: "10000",
   });
 
   const highlightElm = document.createElement("div");
@@ -57,6 +58,7 @@ export function createCursorElements(): [CursorDOMElements, () => void] {
     backgroundColor: `#F25410`,
     // border: "2px dashed #888",
     // borderRadius: "4px",
+    zIndex: "1000",
   });
 
   document.body.appendChild(baseWrapper);
