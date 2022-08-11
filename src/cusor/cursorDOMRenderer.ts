@@ -43,6 +43,7 @@ export function createCursorElements(): [CursorDOMElements, () => void] {
     top: "0px",
     pointerEvents: "none",
     opacity: "0",
+    willChange: "width,height,transform,opacity",
     transitionProperty: "width,height,transform,opacity",
     transitionDuration: ".2s,.2s,.1s,.2s",
     transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
@@ -59,12 +60,12 @@ export function createCursorElements(): [CursorDOMElements, () => void] {
     pointerEvents: "none",
     opacity: ".5",
     willChange: "width,height,transform,opacity,border-radius",
-    transitionProperty: "width,height,transform,opacity,border-radius",
+    transitionProperty: "width,height,transform,opacity",
     transitionDuration: ".3s,.3s,.2s,.2s,.2s",
     transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
     // backgroundColor: `#F25410`,
     border: "2px dashed #F25410",
-    // boxSizing: "border-box",
+    boxSizing: "border-box",
     // borderRadius: "4px",
     zIndex: "1000",
   });
@@ -121,7 +122,7 @@ export const updateCursorDOM: CursorDOMRenderer = ({
   const cursorPosX = x - width / 2;
   const cursorPosY = y - height / 2;
 
-  const BIG_TARGET_HOVER_SCALE = 3;
+  const BIG_TARGET_HOVER_SCALE = 2;
 
   const highlightElmBox = (() => {
     if (isHoveringTargetSmall && hoverTarget.bounds) {
