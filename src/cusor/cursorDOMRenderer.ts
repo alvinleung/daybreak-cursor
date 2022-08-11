@@ -174,34 +174,32 @@ export const updateCursorDOM: CursorDOMRenderer = ({
     return 1;
   })();
 
-  requestAnimationFrame(() => {
-    stylesheet(DOMElements.highlightElm, {
-      // backgroundColor:
-      //   isHoveringTargetBig || isHoveringTargetSmall
-      //     ? "rgba(242, 84,16, 0)"
-      //     : "rgba(242, 84, 16, 1)",
-      opacity: isHoveringTargetBig || isHoveringTargetSmall ? "1" : "0",
-      x: highlightElmBox.x,
-      y: highlightElmBox.y,
-      skewX: skewXAmount / 3,
-      skewY: skewYAmount / 3,
-      scaleX: isMouseDown ? 0.9 : 1,
-      scaleY: isMouseDown ? 0.9 : 1,
-      width: `${highlightElmBox.width}px`,
-      height: `${highlightElmBox.height}px`,
-    });
+  stylesheet(DOMElements.highlightElm, {
+    // backgroundColor:
+    //   isHoveringTargetBig || isHoveringTargetSmall
+    //     ? "rgba(242, 84,16, 0)"
+    //     : "rgba(242, 84, 16, 1)",
+    opacity: isHoveringTargetBig || isHoveringTargetSmall ? "1" : "0",
+    x: highlightElmBox.x,
+    y: highlightElmBox.y,
+    skewX: skewXAmount / 3,
+    skewY: skewYAmount / 3,
+    scaleX: isMouseDown ? 0.9 : 1,
+    scaleY: isMouseDown ? 0.9 : 1,
+    width: `${highlightElmBox.width}px`,
+    height: `${highlightElmBox.height}px`,
+  });
 
-    stylesheet(DOMElements.cursorElm, {
-      backgroundColor: `#F25410`,
-      opacity: hidden ? "0" : "1",
-      scaleX: isMouseDown && !isHovering ? 0.92 : cursorScale,
-      scaleY: isMouseDown && !isHovering ? 0.92 : cursorScale,
-      width: `${width}px`,
-      height: `${height}px`,
-      skewX: skewXAmount,
-      skewY: skewYAmount,
-      x: cursorPosX,
-      y: cursorPosY,
-    });
+  stylesheet(DOMElements.cursorElm, {
+    backgroundColor: `#F25410`,
+    opacity: hidden ? "0" : "1",
+    scaleX: isMouseDown && !isHovering ? 0.92 : cursorScale,
+    scaleY: isMouseDown && !isHovering ? 0.92 : cursorScale,
+    width: `${width}px`,
+    height: `${height}px`,
+    skewX: skewXAmount,
+    skewY: skewYAmount,
+    x: cursorPosX,
+    y: cursorPosY,
   });
 };

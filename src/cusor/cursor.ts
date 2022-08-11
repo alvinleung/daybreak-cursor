@@ -49,13 +49,28 @@ function setupCursorState(
   cursorState: CursorState,
   renderFunction: CursorDOMRenderer
 ): [CursorState, (newCursorState: Partial<CursorState>) => void] {
+  let hasUnrenderedState = false;
+
+  // delay the render to the next animation frame
+  // so that everything render as one after state mutation
+  function attemptRender() {
+    // Only render if there's new state
+    if (!hasUnrenderedState) return;
+    hasUnrenderedState = false;
+    renderFunction(cursorState);
+  }
+  function triggerRender() {
+    hasUnrenderedState = true;
+    requestAnimationFrame(attemptRender);
+  }
+
   function mutateCursorState(newInfo: Partial<CursorState>) {
     Object.keys(newInfo).forEach((infoKey: string) => {
       cursorState[infoKey] = newInfo[infoKey];
     });
 
     // trigger re-render when setting cursor info
-    renderFunction(cursorState);
+    triggerRender();
   }
 
   return [cursorState, mutateCursorState];
