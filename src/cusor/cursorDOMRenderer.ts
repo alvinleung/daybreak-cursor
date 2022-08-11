@@ -99,7 +99,7 @@ export const updateCursorDOM: CursorDOMRenderer = ({
     hoverTarget?.type === HoverTargetType.TARGET_SMALL;
   const isHovering = isHoveringTargetBig || isHoveringTargetSmall;
 
-  const maxSkewAmount = isHoveringText ? 5 : 50;
+  const maxSkewAmount = isHoveringText ? 5 : 30;
   const maxSkewSensitivity = isHoveringText ? 2 : 4;
 
   const skewXAmount = clamp(
