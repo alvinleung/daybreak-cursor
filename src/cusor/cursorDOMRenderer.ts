@@ -44,6 +44,7 @@ export function createCursorElements(): [CursorDOMElements, () => void] {
     transitionProperty: "width,height,transform,opacity",
     transitionDuration: ".2s,.2s,.1s,.2s",
     transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
+    // borderRadius: "4px",
     zIndex: "10000",
   });
 
@@ -55,11 +56,11 @@ export function createCursorElements(): [CursorDOMElements, () => void] {
     top: "0px",
     pointerEvents: "none",
     opacity: ".5",
-    transitionProperty: "width,height,transform,opacity",
-    transitionDuration: ".2s,.2s,.2s,.2s",
+    transitionProperty: "width,height,transform,opacity,background-color",
+    transitionDuration: ".3s,.3s,.2s,.2s",
     transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
-    backgroundColor: `#F25410`,
-    // border: "2px dashed #888",
+    // backgroundColor: `#F25410`,
+    border: "2px dashed #F25410",
     // borderRadius: "4px",
     zIndex: "1000",
   });
@@ -175,7 +176,11 @@ export const updateCursorDOM: CursorDOMRenderer = ({
 
   requestAnimationFrame(() => {
     stylesheet(DOMElements.highlightElm, {
-      opacity: isHoveringTargetBig || isHoveringTargetSmall ? ".4" : "0",
+      // backgroundColor:
+      //   isHoveringTargetBig || isHoveringTargetSmall
+      //     ? "rgba(242, 84,16, 0)"
+      //     : "rgba(242, 84, 16, 1)",
+      opacity: isHoveringTargetBig || isHoveringTargetSmall ? "1" : "0",
       x: highlightElmBox.x,
       y: highlightElmBox.y,
       skewX: skewXAmount / 3,
