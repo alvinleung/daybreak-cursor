@@ -123,8 +123,8 @@ export const updateCursorDOM: CursorDOMRenderer = ({
       const posX = hoverTarget.bounds.x || cursorPosX;
       const posY = hoverTarget.bounds.y || cursorPosY;
 
-      const paddingX = hoverTarget.bounds.width * 0.05;
-      const paddingY = hoverTarget.bounds.height * 0.05;
+      const paddingX = hoverTarget.bounds.width * 0.09;
+      const paddingY = hoverTarget.bounds.height * 0.09;
 
       const boxWidth = hoverTarget.bounds.width + paddingX * 2 || width;
       const boxHeight = hoverTarget.bounds.height + paddingY * 2 || height;
