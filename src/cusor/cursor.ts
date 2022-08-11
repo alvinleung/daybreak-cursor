@@ -98,7 +98,7 @@ export function setupCursor(): [CursorTargetRefresh, CursorCleanup] {
         onMouseEnter: (target) => {
           const lineHeight = parseInt(getComputedStyle(target).fontSize);
           mutateCursorState({
-            width: DEFAULT_SIZE_TEXT,
+            width: clamp(lineHeight * 0.1, DEFAULT_SIZE_TEXT, 12),
             height: lineHeight,
             hoverTarget: {
               type: HoverTargetType.TEXT,
