@@ -93,7 +93,7 @@ export function setupCursor(): [CursorTargetRefresh, CursorCleanup] {
 
   const setupHoverStates = () => {
     const cleanupTextCursor = createHoverState(
-      ".hover-target-text,p,h1,h2,h3",
+      ".hover-target-text,.body-founders,p,h1,h2,h3",
       {
         onMouseEnter: (target) => {
           const lineHeight = parseInt(getComputedStyle(target).fontSize);
@@ -136,24 +136,21 @@ export function setupCursor(): [CursorTargetRefresh, CursorCleanup] {
       },
     });
 
-    const cleanupLinkArea = createHoverState(
-      ".hover-target-big, .project, .body-founders",
-      {
-        onMouseEnter: (target) => {
-          const bounds = target.getBoundingClientRect();
+    const cleanupLinkArea = createHoverState(".hover-target-big, .project", {
+      onMouseEnter: (target) => {
+        const bounds = target.getBoundingClientRect();
 
-          mutateCursorState({
-            hoverTarget: {
-              type: HoverTargetType.TARGET_BIG,
-              bounds: bounds,
-            },
-          });
-        },
-        onMouseLeave: (target) => {
-          mutateCursorState({ hoverTarget: null });
-        },
-      }
-    );
+        mutateCursorState({
+          hoverTarget: {
+            type: HoverTargetType.TARGET_BIG,
+            bounds: bounds,
+          },
+        });
+      },
+      onMouseLeave: (target) => {
+        mutateCursorState({ hoverTarget: null });
+      },
+    });
 
     return () => {
       cleanupLinkArea();
