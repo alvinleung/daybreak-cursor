@@ -108,7 +108,7 @@ export function setupCursor(): [CursorTargetRefresh, CursorCleanup] {
 
   const setupHoverStates = () => {
     const cleanupTextCursor = createHoverState(
-      ".hover-target-text, body-fractul,.body-founders,p,h1,h2,h3",
+      ".hover-target-text, .body-fractul,.body-founders,p,h1,h2,h3",
       {
         onMouseEnter: (target) => {
           const lineHeight = parseInt(getComputedStyle(target).fontSize);
