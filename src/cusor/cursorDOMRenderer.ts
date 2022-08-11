@@ -54,7 +54,9 @@ export function createCursorElements(): [CursorDOMElements, () => void] {
     transitionProperty: "width,height,transform,opacity",
     transitionDuration: ".2s,.2s,.2s,.2s",
     transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
-    backgroundBlendMode: "multiply",
+    backgroundColor: `#F25410`,
+    // border: "2px dashed #888",
+    // borderRadius: "4px",
   });
 
   document.body.appendChild(baseWrapper);
@@ -109,7 +111,7 @@ export const updateCursorDOM: CursorDOMRenderer = ({
   const cursorPosX = x - width / 2;
   const cursorPosY = y - height / 2;
 
-  const BIG_TARGET_HOVER_SCALE = 4;
+  const BIG_TARGET_HOVER_SCALE = 2;
 
   const highlightElmBox = (() => {
     if (isHoveringTargetSmall && hoverTarget.bounds) {
@@ -168,7 +170,6 @@ export const updateCursorDOM: CursorDOMRenderer = ({
 
   requestAnimationFrame(() => {
     stylesheet(DOMElements.highlightElm, {
-      backgroundColor: `#F25410`,
       opacity: isHoveringTargetBig || isHoveringTargetSmall ? ".4" : "0",
       x: highlightElmBox.x,
       y: highlightElmBox.y,

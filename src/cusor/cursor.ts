@@ -43,6 +43,7 @@ export interface CursorState {
 
 export type CursorDOMRenderer = (cursorInfo: CursorState) => void;
 export type CursorCleanup = () => void;
+export type CursorTargetRefresh = () => void;
 
 function setupCursorState(
   cursorState: CursorState,
@@ -64,7 +65,7 @@ function setupCursorState(
  *
  * @returns [CursorState, CursorCleanup]
  */
-export function setupCursor(): [CursorState, CursorCleanup] {
+export function setupCursor(): [CursorTargetRefresh, CursorCleanup] {
   const [allCursorElm, removeAllCursorElm] = createCursorElements();
 
   const DEFAULT_SIZE = 10;
@@ -111,38 +112,51 @@ export function setupCursor(): [CursorState, CursorCleanup] {
     },
   });
 
-  const cleanupLink = createHoverState(".hover-target-small, a", {
-    onMouseEnter: (target) => {
-      const bounds = target.getBoundingClientRect();
-      mutateCursorState({
-        width: DEFAULT_SIZE,
-        height: DEFAULT_SIZE,
-        hoverTarget: {
-          type: HoverTargetType.TARGET_SMALL,
-          bounds: bounds,
-        },
-      });
-    },
-    onMouseLeave: (target) => {
-      mutateCursorState({ hoverTarget: null });
-    },
-  });
+  const setupHoverStates = () => {
+    const cleanupLink = createHoverState(".hover-target-small, a", {
+      onMouseEnter: (target) => {
+        const bounds = target.getBoundingClientRect();
+        mutateCursorState({
+          width: DEFAULT_SIZE,
+          height: DEFAULT_SIZE,
+          hoverTarget: {
+            type: HoverTargetType.TARGET_SMALL,
+            bounds: bounds,
+          },
+        });
+      },
+      onMouseLeave: (target) => {
+        mutateCursorState({ hoverTarget: null });
+      },
+    });
 
-  const cleanupLinkArea = createHoverState(".hover-target-big", {
-    onMouseEnter: (target) => {
-      const bounds = target.getBoundingClientRect();
+    const cleanupLinkArea = createHoverState(".hover-target-big", {
+      onMouseEnter: (target) => {
+        const bounds = target.getBoundingClientRect();
 
-      mutateCursorState({
-        hoverTarget: {
-          type: HoverTargetType.TARGET_BIG,
-          bounds: bounds,
-        },
-      });
-    },
-    onMouseLeave: (target) => {
-      mutateCursorState({ hoverTarget: null });
-    },
-  });
+        mutateCursorState({
+          hoverTarget: {
+            type: HoverTargetType.TARGET_BIG,
+            bounds: bounds,
+          },
+        });
+      },
+      onMouseLeave: (target) => {
+        mutateCursorState({ hoverTarget: null });
+      },
+    });
+
+    return () => {
+      cleanupLinkArea();
+      cleanupLink();
+    };
+  };
+
+  let cleanupHoverState = setupHoverStates();
+  function refreshHoverTargets() {
+    cleanupHoverState();
+    cleanupHoverState = setupHoverStates();
+  }
 
   const cleaupIsMouseDown = setupIsMouseDown({
     onMouseDown: () => {
@@ -199,12 +213,11 @@ export function setupCursor(): [CursorState, CursorCleanup] {
   function cleanup() {
     removeAllCursorElm();
     cleanupTextCursor();
-    cleanupLink();
-    cleanupLinkArea();
+    cleanupHoverState();
     cleanupOffscreenDetector();
     cleanupMouseMoveListeners();
     cleaupIsMouseDown();
   }
 
-  return [cursorState, cleanup];
+  return [refreshHoverTargets, cleanup];
 }
