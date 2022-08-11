@@ -136,21 +136,24 @@ export function setupCursor(): [CursorTargetRefresh, CursorCleanup] {
       },
     });
 
-    const cleanupLinkArea = createHoverState(".hover-target-big, .project", {
-      onMouseEnter: (target) => {
-        const bounds = target.getBoundingClientRect();
+    const cleanupLinkArea = createHoverState(
+      ".hover-target-big, .project, .body-founders",
+      {
+        onMouseEnter: (target) => {
+          const bounds = target.getBoundingClientRect();
 
-        mutateCursorState({
-          hoverTarget: {
-            type: HoverTargetType.TARGET_BIG,
-            bounds: bounds,
-          },
-        });
-      },
-      onMouseLeave: (target) => {
-        mutateCursorState({ hoverTarget: null });
-      },
-    });
+          mutateCursorState({
+            hoverTarget: {
+              type: HoverTargetType.TARGET_BIG,
+              bounds: bounds,
+            },
+          });
+        },
+        onMouseLeave: (target) => {
+          mutateCursorState({ hoverTarget: null });
+        },
+      }
+    );
 
     return () => {
       cleanupLinkArea();
