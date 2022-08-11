@@ -116,6 +116,8 @@ export function setupCursor(): [CursorTargetRefresh, CursorCleanup] {
     const cleanupLink = createHoverState(".hover-target-small, a", {
       onMouseEnter: (target) => {
         const bounds = target.getBoundingClientRect();
+        target.style.color = "#f25410";
+        target.style.cursor = "none";
         mutateCursorState({
           width: DEFAULT_SIZE,
           height: DEFAULT_SIZE,
@@ -126,6 +128,8 @@ export function setupCursor(): [CursorTargetRefresh, CursorCleanup] {
         });
       },
       onMouseLeave: (target) => {
+        target.style.removeProperty("color");
+        target.style.removeProperty("cursor");
         mutateCursorState({ hoverTarget: null });
       },
     });
