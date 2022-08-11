@@ -59,8 +59,8 @@ export function createCursorElements(): [CursorDOMElements, () => void] {
     top: "0px",
     pointerEvents: "none",
     opacity: ".5",
-    willChange: "width,height,transform,opacity,border-radius",
-    transitionProperty: "width,height,transform,opacity,border-radius",
+    willChange: "width,height,transform,opacity",
+    transitionProperty: "width,height,transform,opacity",
     transitionDuration: ".3s,.3s,.2s,.2s,.2s",
     transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
     // backgroundColor: `#F25410`,
@@ -193,7 +193,6 @@ export const updateCursorDOM: CursorDOMRenderer = ({
     scaleY: isMouseDown ? 0.9 : 1,
     width: `${highlightElmBox.width}px`,
     height: `${highlightElmBox.height}px`,
-    borderRadius: isHoveringTargetBig ? "100%" : "0%",
   });
 
   stylesheet(DOMElements.cursorElm, {
