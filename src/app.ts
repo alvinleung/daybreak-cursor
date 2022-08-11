@@ -6,7 +6,7 @@ window.addEventListener("DOMContentLoaded", () => {
   if (window.router) {
     //@ts-ignore
     const router = window.router;
-    router.onRouteChange(() => {
+    router.observeRouteChange(() => {
       refershCursorTargets();
     });
   }
