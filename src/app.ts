@@ -7,7 +7,7 @@ window.addEventListener("DOMContentLoaded", () => {
     //@ts-ignore
     const router = window.router;
     router.observePageLoad(() => {
-      // refershCursorTargets();
+      refershCursorTargets();
     });
   }
 });
