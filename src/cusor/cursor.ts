@@ -106,30 +106,30 @@ export function setupCursor(): [CursorTargetRefresh, CursorCleanup] {
     updateCursorDOM
   );
 
+  const cleanupTextCursor = createHoverState(
+    ".hover-target-text, .body-fractul,.body-founders,p,h1,h2,h3",
+    {
+      onMouseEnter: (target) => {
+        const lineHeight = parseInt(getComputedStyle(target).fontSize);
+        mutateCursorState({
+          width: clamp(lineHeight * 0.08, DEFAULT_SIZE_TEXT, 12),
+          height: lineHeight,
+          hoverTarget: {
+            type: HoverTargetType.TEXT,
+            bounds: null,
+          },
+        });
+      },
+      onMouseLeave: () => {
+        mutateCursorState({
+          width: DEFAULT_SIZE,
+          height: DEFAULT_SIZE,
+          hoverTarget: null,
+        });
+      },
+    }
+  );
   const setupHoverStates = () => {
-    const cleanupTextCursor = createHoverState(
-      ".hover-target-text, .body-fractul,.body-founders,p,h1,h2,h3",
-      {
-        onMouseEnter: (target) => {
-          const lineHeight = parseInt(getComputedStyle(target).fontSize);
-          mutateCursorState({
-            width: clamp(lineHeight * 0.08, DEFAULT_SIZE_TEXT, 12),
-            height: lineHeight,
-            hoverTarget: {
-              type: HoverTargetType.TEXT,
-              bounds: null,
-            },
-          });
-        },
-        onMouseLeave: () => {
-          mutateCursorState({
-            width: DEFAULT_SIZE,
-            height: DEFAULT_SIZE,
-            hoverTarget: null,
-          });
-        },
-      }
-    );
     const cleanupLink = createHoverState(".hover-target-small, a", {
       onMouseEnter: (target) => {
         const bounds = target.getBoundingClientRect();
