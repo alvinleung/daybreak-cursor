@@ -107,6 +107,8 @@ export function setupCursor(): [CursorTargetRefresh, CursorCleanup] {
   );
 
   const buildSelector = ({ include = "", exclude = "" }) => {
+    if (exclude === "") return include;
+
     return include
       .split(",")
       .map((includeClass) => {
