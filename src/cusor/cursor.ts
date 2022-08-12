@@ -106,31 +106,45 @@ export function setupCursor(): [CursorTargetRefresh, CursorCleanup] {
     updateCursorDOM
   );
 
+  const buildSelector = ({ include = "", exclude = "" }) => {
+    return include
+      .split(",")
+      .map((includeClass) => {
+        return `${includeClass}:not${exclude}`;
+      })
+      .join(",");
+  };
+
   const setupHoverStates = () => {
-    const cleanupTextCursor = createHoverState(
-      ".hover-target-text, .body-fractul,.body-founders,p,h1,h2,h3",
-      {
-        onMouseEnter: (target) => {
-          const lineHeight = parseInt(getComputedStyle(target).fontSize);
-          mutateCursorState({
-            width: clamp(lineHeight * 0.08, DEFAULT_SIZE_TEXT, 12),
-            height: lineHeight,
-            hoverTarget: {
-              type: HoverTargetType.TEXT,
-              bounds: null,
-            },
-          });
-        },
-        onMouseLeave: () => {
-          mutateCursorState({
-            width: DEFAULT_SIZE,
-            height: DEFAULT_SIZE,
-            hoverTarget: null,
-          });
-        },
-      }
-    );
-    const cleanupLink = createHoverState(".hover-target-small, a", {
+    const cleanupTextCursorSelector = buildSelector({
+      include: ".hover-target-text, .body-fractul,.body-founders,p,h1,h2,h3",
+    });
+    const cleanupTextCursor = createHoverState(cleanupTextCursorSelector, {
+      onMouseEnter: (target) => {
+        const lineHeight = parseInt(getComputedStyle(target).fontSize);
+        mutateCursorState({
+          width: clamp(lineHeight * 0.08, DEFAULT_SIZE_TEXT, 12),
+          height: lineHeight,
+          hoverTarget: {
+            type: HoverTargetType.TEXT,
+            bounds: null,
+          },
+        });
+      },
+      onMouseLeave: () => {
+        mutateCursorState({
+          width: DEFAULT_SIZE,
+          height: DEFAULT_SIZE,
+          hoverTarget: null,
+        });
+      },
+    });
+
+    const cleanupLinkSelector = buildSelector({
+      include: ".hover-target-small, a",
+      exclude: ".hover-target-big",
+    });
+    const cleanupLink = createHoverState(cleanupLinkSelector, {
       onMouseEnter: (target) => {
         const bounds = target.getBoundingClientRect();
         target.style.color = "#f25410";
@@ -151,24 +165,25 @@ export function setupCursor(): [CursorTargetRefresh, CursorCleanup] {
       },
     });
 
-    const cleanupLinkArea = createHoverState(
-      ".hover-target-big, .project, .next-up-overlay",
-      {
-        onMouseEnter: (target) => {
-          const bounds = target.getBoundingClientRect();
+    const cleanupLinkAreaSelector = buildSelector({
+      include: ".hover-target-big, .project, .next-up-overlay",
+      exclude: ".hover-target-small",
+    });
+    const cleanupLinkArea = createHoverState(cleanupLinkAreaSelector, {
+      onMouseEnter: (target) => {
+        const bounds = target.getBoundingClientRect();
 
-          mutateCursorState({
-            hoverTarget: {
-              type: HoverTargetType.TARGET_BIG,
-              bounds: bounds,
-            },
-          });
-        },
-        onMouseLeave: (target) => {
-          mutateCursorState({ hoverTarget: null });
-        },
-      }
-    );
+        mutateCursorState({
+          hoverTarget: {
+            type: HoverTargetType.TARGET_BIG,
+            bounds: bounds,
+          },
+        });
+      },
+      onMouseLeave: (target) => {
+        mutateCursorState({ hoverTarget: null });
+      },
+    });
 
     return () => {
       cleanupLinkArea();
