@@ -174,6 +174,16 @@ export function setupCursor(): [CursorTargetRefresh, CursorCleanup] {
       cleanupLinkArea();
       cleanupLink();
       cleanupTextCursor();
+
+      const resetAfterMouseMove = () => {
+        mutateCursorState({
+          width: DEFAULT_SIZE,
+          height: DEFAULT_SIZE,
+          hoverTarget: null,
+        });
+        window.removeEventListener("pointermove", resetAfterMouseMove);
+      };
+      window.addEventListener("pointermove", resetAfterMouseMove);
     };
   };
 
