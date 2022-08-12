@@ -110,7 +110,7 @@ export function setupCursor(): [CursorTargetRefresh, CursorCleanup] {
     return include
       .split(",")
       .map((includeClass) => {
-        return `${includeClass}:not${exclude}`;
+        return `${includeClass}:not(${exclude})`;
       })
       .join(",");
   };
