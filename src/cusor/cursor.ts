@@ -174,11 +174,6 @@ export function setupCursor(): [CursorTargetRefresh, CursorCleanup] {
       cleanupLinkArea();
       cleanupLink();
       cleanupTextCursor();
-      mutateCursorState({
-        width: DEFAULT_SIZE,
-        height: DEFAULT_SIZE,
-        hoverTarget: null,
-      });
     };
   };
 
