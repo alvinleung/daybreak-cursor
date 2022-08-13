@@ -18,6 +18,7 @@ export function createCursorElements(): [CursorDOMElements, () => void] {
 
   baseWrapper.classList.add("persist");
   baseWrapper.setAttribute("persist-id", "cursor-base-wrapper");
+  baseWrapper.setAttribute("persist-permanent", "true");
 
   stylesheet(baseWrapper, {
     position: "fixed",
@@ -37,6 +38,7 @@ export function createCursorElements(): [CursorDOMElements, () => void] {
   // the base element of the cursor
   const cursorElm = document.createElement("div");
   cursorElm.setAttribute("persist-id", "cursor");
+  cursorElm.setAttribute("persist-permanent", "true");
   stylesheet(cursorElm, {
     position: "fixed",
     left: "0px",
@@ -53,6 +55,7 @@ export function createCursorElements(): [CursorDOMElements, () => void] {
 
   const highlightElm = document.createElement("div");
   highlightElm.setAttribute("persist-id", "cursor-highlight");
+  highlightElm.setAttribute("persist-permanent", "true");
   stylesheet(highlightElm, {
     position: "fixed",
     left: "0px",
