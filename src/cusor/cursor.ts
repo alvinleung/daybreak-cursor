@@ -118,12 +118,14 @@ export function setupCursor(): [CursorTargetRefresh, CursorCleanup] {
   };
 
   const setupHoverStates = () => {
-    Array.from(document.querySelectorAll("a *")).forEach(
-      (elm: HTMLElement) => (elm.style.pointerEvents = "none")
+    Array.from<HTMLElement>(document.querySelectorAll("a *")).forEach(
+      (elm: HTMLElement) => {
+        return (elm.style.pointerEvents = "none");
+      }
     );
 
     const cleanupTextCursorSelector = buildSelector({
-      include: ".hover-target-text, .body-fractul,.body-founders,p,h1,h2,h3",
+      include: ".hover-target-text, .body-fractul,.body-founders, .caption,p,h1,h2,h3",
       exclude:
         ".hover-target-small, .hover-target-big, a *, .hover-target-small *",
     });
