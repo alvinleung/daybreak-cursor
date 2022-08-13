@@ -120,6 +120,7 @@ export function setupCursor(): [CursorTargetRefresh, CursorCleanup] {
   const setupHoverStates = () => {
     const cleanupTextCursorSelector = buildSelector({
       include: ".hover-target-text, .body-fractul,.body-founders,p,h1,h2,h3",
+      exclude: ".hover-target-small, .hover-target-big",
     });
     const cleanupTextCursor = createHoverState(cleanupTextCursorSelector, {
       onMouseEnter: (target) => {
