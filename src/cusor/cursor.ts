@@ -80,7 +80,7 @@ function setupCursorState(
  *
  * @returns [CursorState, CursorCleanup]
  */
-export function setupCursor(): [CursorTargetRefresh, CursorCleanup] {
+export function setupCursor() {
   const [allCursorElm, removeAllCursorElm] = createCursorElements();
 
   const DEFAULT_SIZE = 10;
@@ -278,5 +278,5 @@ export function setupCursor(): [CursorTargetRefresh, CursorCleanup] {
     cleaupIsMouseDown();
   }
 
-  return [refreshHoverTargets, cleanup];
+  return { refershCursorTargets: refreshHoverTargets, cleanupCursor: cleanup, };
 }

@@ -1,7 +1,7 @@
 import { setupCursor } from "./cusor/cursor";
 
 window.addEventListener("DOMContentLoaded", () => {
-  const [refershCursorTargets, cleanupCursor] = setupCursor();
+  const { refershCursorTargets, cleanupCursor } = setupCursor();
 
   //@ts-ignore
   window.daybreak = window.daybreak || {}
