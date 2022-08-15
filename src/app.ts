@@ -5,7 +5,7 @@ window.addEventListener("DOMContentLoaded", () => {
   //@ts-ignore
   if (window.daybreak && window.daybreak.router) {
     //@ts-ignore
-    const router = window.dabyreak.router;
+    const router = window.daybreak.router;
     router.observePageLoad(() => {
       refershCursorTargets();
     });
