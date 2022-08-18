@@ -131,6 +131,8 @@ export function setupCursor() {
     });
     const cleanupTextCursor = createHoverState(cleanupTextCursorSelector, {
       onMouseEnter: (target) => {
+        if (target.style.opacity === "0" || target.style.visibility === "hidden") return;
+
         const lineHeight = parseInt(getComputedStyle(target).fontSize);
         mutateCursorState({
           width: clamp(lineHeight * 0.06, DEFAULT_SIZE_TEXT, 12),
