@@ -101,7 +101,19 @@ export const updateCursorDOM: CursorDOMRenderer = ({
   hidden,
   hoverTarget,
   isMouseDown,
+  useTouchInput
 }: CursorState) => {
+
+  if (useTouchInput.value === true) {
+    stylesheet(DOMElements.highlightElm, {
+      opacity: "0"
+    });
+    stylesheet(DOMElements.cursorElm, {
+      opacity: "0"
+    });
+    return;
+  }
+
   const isHoveringText = hoverTarget?.type === HoverTargetType.TEXT;
   const isHoveringTargetBig = hoverTarget?.type === HoverTargetType.TARGET_BIG;
   const isHoveringTargetSmall =
