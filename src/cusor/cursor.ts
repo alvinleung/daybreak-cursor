@@ -40,6 +40,7 @@ export interface CursorState {
   hidden: boolean;
   width: number;
   height: number;
+  useTouchInput: UseTouchInput;
 }
 
 export type CursorDOMRenderer = (cursorInfo: CursorState) => void;
@@ -55,6 +56,8 @@ function setupCursorState(
   // delay the render to the next animation frame
   // so that everything render as one after state mutation
   function attemptRender() {
+    if (cursorState.useTouchInput.value === true) return;
+
     // Only render if there's new state
     if (!hasUnrenderedState) return;
     hasUnrenderedState = false;
@@ -107,6 +110,7 @@ export function setupCursor() {
       width: DEFAULT_SIZE,
       height: DEFAULT_SIZE,
       DOMElements: allCursorElm,
+      useTouchInput: useTouchInput
     },
     updateCursorDOM
   );
