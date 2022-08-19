@@ -133,12 +133,12 @@ export function setupCursor() {
       }
     );
 
-    const cleanupTextCursorSelector = buildSelector({
+    const textCursorSelector = buildSelector({
       include: ".hover-target-text, .body-fractul,.body-founders, .caption,p,h1,h2,h3",
       exclude:
         ".hover-target-small, .hover-target-big, a *, .hover-target-small *",
     });
-    const cleanupTextCursor = createHoverState(cleanupTextCursorSelector, {
+    const cleanupTextCursor = createHoverState(textCursorSelector, {
       onMouseEnter: (target) => {
         if (target.style.opacity === "0" || target.style.visibility === "hidden") return;
 
@@ -161,11 +161,11 @@ export function setupCursor() {
       },
     }, useTouchInput);
 
-    const cleanupLinkSelector = buildSelector({
+    const linkSelector = buildSelector({
       include: ".hover-target-small, a",
       exclude: ".hover-target-big",
     });
-    const cleanupLink = createHoverState(cleanupLinkSelector, {
+    const cleanupLink = createHoverState(linkSelector, {
       onMouseEnter: (target) => {
         const bounds = target.getBoundingClientRect();
         target.style.color = "#f25410";
@@ -186,11 +186,11 @@ export function setupCursor() {
       },
     }, useTouchInput);
 
-    const cleanupLinkAreaSelector = buildSelector({
+    const linkAreaSelector = buildSelector({
       include: ".hover-target-big, .project, .next-up-overlay",
       exclude: ".hover-target-small",
     });
-    const cleanupLinkArea = createHoverState(cleanupLinkAreaSelector, {
+    const cleanupLinkArea = createHoverState(linkAreaSelector, {
       onMouseEnter: (target) => {
         const bounds = target.getBoundingClientRect();
 
