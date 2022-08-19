@@ -61,7 +61,7 @@ export function createCursorElements(): [CursorDOMElements, () => void] {
     left: "0px",
     top: "0px",
     pointerEvents: "none",
-    opacity: ".5",
+    opacity: "0",
     willChange: "width,height,transform,opacity",
     transitionProperty: "width,height,transform,opacity",
     transitionDuration: ".3s,.3s,.2s,.2s,.2s",
