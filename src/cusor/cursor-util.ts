@@ -5,19 +5,26 @@ export type Partial<T> = {
 export const clamp = (num: number, min: number, max: number) =>
   Math.min(Math.max(num, min), max);
 
+export interface UseTouchInput {
+  value: boolean
+}
+
 export function createHoverState(
   selector: string,
   {
-    onMouseEnter = (target: HTMLElement) => {},
-    onMouseLeave = (target: HTMLElement) => {},
-  }
+    onMouseEnter = (target: HTMLElement) => { },
+    onMouseLeave = (target: HTMLElement) => { },
+  },
+  isUsingTouch: UseTouchInput
 ) {
   const allText: NodeListOf<HTMLElement> = document.querySelectorAll(selector);
 
   function handlePointerEnter(e: PointerEvent) {
+    if (isUsingTouch.value) return;
     onMouseEnter(e.target as HTMLElement);
   }
   function handlePointerLeave(e: PointerEvent) {
+    if (isUsingTouch.value) return;
     // handle pointer leave
     onMouseLeave(e.target as HTMLElement);
   }
@@ -37,13 +44,15 @@ export function createHoverState(
 }
 
 export function detectOffscreen({
-  onEnterScreen = (e: MouseEvent) => {},
-  onExitScreen = (e: MouseEvent) => {},
-}) {
+  onEnterScreen = (e: MouseEvent) => { },
+  onExitScreen = (e: MouseEvent) => { },
+}, isUsingTouch: UseTouchInput) {
   const handlePointerEnter = (e: MouseEvent) => {
+    if (isUsingTouch.value) return;
     onEnterScreen(e);
   };
   const handlePointerLeave = (e: MouseEvent) => {
+    if (isUsingTouch.value) return;
     onExitScreen(e);
   };
 
@@ -67,33 +76,33 @@ export function debounce(callback: Function, millisec: number) {
 }
 
 export function observeMouseMove({
-  onMouseMove = (e: MouseEvent) => {},
-  onMouseStop = () => {},
-}) {
+  onMouseMove = (e: MouseEvent) => { },
+  onMouseStop = () => { },
+}, isUsingTouch: UseTouchInput) {
   const MOUSE_STOP_DELAY = 50;
   const mouseStopCallback = debounce(() => {
     onMouseStop();
   }, MOUSE_STOP_DELAY);
 
   function handleMouseMove(e: MouseEvent) {
+    if (isUsingTouch.value) return;
     onMouseMove(e);
-
     // add a debouncer for timeout
     mouseStopCallback();
   }
 
   // Add mouse event
-  window.addEventListener("pointermove", handleMouseMove);
+  window.addEventListener("mousemove", handleMouseMove);
 
   return () => {
-    window.removeEventListener("pointermove", handleMouseMove);
+    window.removeEventListener("mousemove", handleMouseMove);
   };
 }
 
 export function setupIsMouseDown({
-  onMouseDown = () => {},
-  onMouseUp = () => {},
-}) {
+  onMouseDown = () => { },
+  onMouseUp = () => { },
+}, isUsingTouch: UseTouchInput) {
   window.addEventListener("mousedown", onMouseDown);
   window.addEventListener("mouseup", onMouseUp);
   return () => {

@@ -6,6 +6,7 @@ import {
   detectOffscreen,
   observeMouseMove,
   setupIsMouseDown,
+  UseTouchInput,
 } from "./cursor-util";
 import {
   createCursorElements,
@@ -80,8 +81,12 @@ function setupCursorState(
  *
  * @returns [CursorState, CursorCleanup]
  */
+
+const isTouchDevice: any = (navigator.maxTouchPoints || 'ontouchstart' in document.documentElement);
+
 export function setupCursor() {
   const [allCursorElm, removeAllCursorElm] = createCursorElements();
+  const useTouchInput: UseTouchInput = { value: isTouchDevice };
 
   const DEFAULT_SIZE = 10;
   const DEFAULT_SIZE_TEXT = 2;
@@ -150,7 +155,7 @@ export function setupCursor() {
           hoverTarget: null,
         });
       },
-    });
+    }, useTouchInput);
 
     const cleanupLinkSelector = buildSelector({
       include: ".hover-target-small, a",
@@ -175,7 +180,7 @@ export function setupCursor() {
         target.style.removeProperty("cursor");
         mutateCursorState({ hoverTarget: null });
       },
-    });
+    }, useTouchInput);
 
     const cleanupLinkAreaSelector = buildSelector({
       include: ".hover-target-big, .project, .next-up-overlay",
@@ -195,7 +200,7 @@ export function setupCursor() {
       onMouseLeave: (target) => {
         mutateCursorState({ hoverTarget: null });
       },
-    });
+    }, useTouchInput);
 
     return () => {
       cleanupLinkArea();
@@ -208,9 +213,9 @@ export function setupCursor() {
           height: DEFAULT_SIZE,
           hoverTarget: null,
         });
-        window.removeEventListener("pointermove", resetAfterMouseMove);
+        window.removeEventListener("mousemove", resetAfterMouseMove);
       };
-      window.addEventListener("pointermove", resetAfterMouseMove);
+      window.addEventListener("mousemove", resetAfterMouseMove);
     };
   };
 
@@ -227,7 +232,7 @@ export function setupCursor() {
     onMouseUp: () => {
       mutateCursorState({ isMouseDown: false });
     },
-  });
+  }, useTouchInput);
 
   const cleanupOffscreenDetector = detectOffscreen({
     onEnterScreen: (e: MouseEvent) => {
@@ -242,7 +247,7 @@ export function setupCursor() {
         hidden: true,
       });
     },
-  });
+  }, useTouchInput);
 
   const cleanupMouseMoveListeners = observeMouseMove({
     onMouseMove: (e: MouseEvent) => {
@@ -270,9 +275,21 @@ export function setupCursor() {
         velY: 0,
       });
     },
-  });
+  }, useTouchInput);
+
+
+  const handleMouseEnter = () => {
+    useTouchInput.value = false;
+  }
+  const handleTouchBegin = () => {
+    useTouchInput.value = true;
+  }
+  document.body.addEventListener("mouseenter", handleMouseEnter);
+  document.body.addEventListener("touchstart", handleTouchBegin);
 
   function cleanup() {
+    document.body.removeEventListener("mouseenter", handleMouseEnter);
+    document.body.removeEventListener("touchstart", handleTouchBegin);
     removeAllCursorElm();
     cleanupHoverState();
     cleanupOffscreenDetector();
