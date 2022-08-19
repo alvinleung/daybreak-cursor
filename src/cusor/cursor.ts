@@ -282,18 +282,18 @@ export function setupCursor() {
   }, useTouchInput);
 
 
-  const handleMouseEnter = () => {
+  const useMouse = () => {
     useTouchInput.value = false;
   }
-  const handleTouchBegin = () => {
+  const useTouch = () => {
     useTouchInput.value = true;
   }
-  document.body.addEventListener("mouseenter", handleMouseEnter);
-  document.body.addEventListener("touchstart", handleTouchBegin);
+  document.body.addEventListener("mousemove", useMouse);
+  document.body.addEventListener("touchstart", useTouch);
 
   function cleanup() {
-    document.body.removeEventListener("mouseenter", handleMouseEnter);
-    document.body.removeEventListener("touchstart", handleTouchBegin);
+    document.body.removeEventListener("mousemove", useMouse);
+    document.body.removeEventListener("touchstart", useTouch);
     removeAllCursorElm();
     cleanupHoverState();
     cleanupOffscreenDetector();
