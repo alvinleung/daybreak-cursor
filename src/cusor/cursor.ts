@@ -140,7 +140,7 @@ export function setupCursor() {
       include:
         ".hover-target-text, .body-fractul,.body-founders, .caption,p,h1,h2,h3",
       exclude:
-        ".hover-target-small, .hover-target-big, a *, .hover-target-small *, .hover-target-arrow *, next-up-wrapper *",
+        ".hover-target-small, .hover-target-big, a *, .hover-target-small *, .hover-target-arrow *, .next-up-wrapper *",
     });
     const cleanupTextCursor = createHoverState(
       textCursorSelector,
