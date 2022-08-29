@@ -230,7 +230,7 @@ export function setupCursor() {
     );
 
     const arrowLinkSelector = buildSelector({
-      include: ".hover-target-arrow, .next-up-overlay",
+      include: ".hover-target-arrow, .next-up-wrapper",
       exclude: ".hover-target-small",
     });
     const cleanupArrowLink = createHoverState(
