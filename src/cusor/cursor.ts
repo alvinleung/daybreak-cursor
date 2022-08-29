@@ -205,7 +205,7 @@ export function setupCursor() {
     );
 
     const linkAreaSelector = buildSelector({
-      include: ".hover-target-big, .project, .next-up-overlay",
+      include: ".hover-target-big, .project",
       exclude: ".hover-target-small",
     });
     const cleanupLinkArea = createHoverState(
@@ -230,7 +230,7 @@ export function setupCursor() {
     );
 
     const arrowLinkSelector = buildSelector({
-      include: ".hover-target-arrow",
+      include: ".hover-target-arrow, .next-up-overlay",
       exclude: ".hover-target-small",
     });
     const cleanupArrowLink = createHoverState(
