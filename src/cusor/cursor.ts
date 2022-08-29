@@ -347,10 +347,10 @@ export function setupCursor() {
       useTouchInput.value = true;
     }
   };
-  document.body.addEventListener("pointerdown", switchTouchAndMouse);
+  document.body.addEventListener("pointermove", switchTouchAndMouse);
 
   function cleanup() {
-    document.body.addEventListener("pointerdown", switchTouchAndMouse);
+    document.body.addEventListener("pointermove", switchTouchAndMouse);
     removeAllCursorElm();
     cleanupHoverState();
     cleanupOffscreenDetector();
