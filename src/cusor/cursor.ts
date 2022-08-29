@@ -255,12 +255,21 @@ export function setupCursor() {
     );
 
     return () => {
-      cleanupLinkArea();
-      cleanupLink();
-      cleanupTextCursor();
-      cleanupArrowLink();
+      const cleanup = () => {
+        cleanupLinkArea();
+        cleanupLink();
+        cleanupTextCursor();
+        cleanupArrowLink();
+      };
+
+      // just straight up execute cleanup if no hover target
+      if (!cursorState.hoverTarget) {
+        cleanup();
+        return;
+      }
 
       const resetAfterMouseMove = () => {
+        if (cursorState.hoverTarget) return;
         mutateCursorState({
           width: DEFAULT_SIZE,
           height: DEFAULT_SIZE,
