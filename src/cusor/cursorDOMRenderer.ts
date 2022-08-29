@@ -276,7 +276,7 @@ export const updateCursorDOM: CursorDOMRenderer = ({
     // y: cursorPosY,
   });
 
-  const svgScale = isHoveringTargetArrow ? (isMouseDown ? 1.9 : 2) : 0;
+  const svgScale = isHoveringTargetArrow ? (isMouseDown ? 1.8 : 2) : 0;
   const targetRotation = hoverTarget?.target.getAttribute("angle");
   const targetRotationInt = targetRotation && parseInt(targetRotation);
   const svgRotate = targetRotationInt
