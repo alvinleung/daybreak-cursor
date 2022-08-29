@@ -18,11 +18,13 @@ export enum HoverTargetType {
   TEXT, // for paragraph
   TARGET_BIG, // for an area like a photo
   TARGET_SMALL, // for text link
+  TARGET_ARROW,
 }
 
 export interface HoverTarget {
   type: HoverTargetType;
   bounds: DOMRect | null;
+  target: HTMLElement;
 }
 
 export interface CursorState {
@@ -157,6 +159,7 @@ export function setupCursor() {
             hoverTarget: {
               type: HoverTargetType.TEXT,
               bounds: null,
+              target,
             },
           });
         },
@@ -188,6 +191,7 @@ export function setupCursor() {
             hoverTarget: {
               type: HoverTargetType.TARGET_SMALL,
               bounds: bounds,
+              target: target,
             },
           });
         },
@@ -214,6 +218,32 @@ export function setupCursor() {
             hoverTarget: {
               type: HoverTargetType.TARGET_BIG,
               bounds: bounds,
+              target,
+            },
+          });
+        },
+        onMouseLeave: (target) => {
+          mutateCursorState({ hoverTarget: null });
+        },
+      },
+      useTouchInput
+    );
+
+    const arrowLinkSelector = buildSelector({
+      include: ".hover-target-arrow",
+      exclude: ".hover-target-small",
+    });
+    const cleanupArrowLink = createHoverState(
+      arrowLinkSelector,
+      {
+        onMouseEnter: (target) => {
+          const bounds = target.getBoundingClientRect();
+
+          mutateCursorState({
+            hoverTarget: {
+              type: HoverTargetType.TARGET_ARROW,
+              bounds: bounds,
+              target,
             },
           });
         },
@@ -228,6 +258,7 @@ export function setupCursor() {
       cleanupLinkArea();
       cleanupLink();
       cleanupTextCursor();
+      cleanupArrowLink();
 
       const resetAfterMouseMove = () => {
         mutateCursorState({

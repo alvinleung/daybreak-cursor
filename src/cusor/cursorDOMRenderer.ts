@@ -6,6 +6,7 @@ export interface CursorDOMElements {
   cursorElm: HTMLDivElement;
   highlightElm: HTMLDivElement;
   containerElm: HTMLDivElement;
+  arrowSvg: SVGSVGElement;
 }
 
 /**
@@ -82,7 +83,36 @@ export function createCursorElements(): [CursorDOMElements, () => void] {
     zIndex: "1000",
   });
 
+  const arrowElm = document.createElement("div");
+  arrowElm.style.position = "relative";
+
+  const arrowSvg = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "svg"
+  );
+  arrowSvg.style.position = "absolute";
+  arrowSvg.style.transform = "translate(-30%,-25%) scale(0)";
+  arrowSvg.style.transition = "transform .2s cubic-bezier(0.22, 1, 0.36, 1)";
+
+  const arrowPath = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "path"
+  );
+  arrowSvg.setAttribute("width", "24");
+  arrowSvg.setAttribute("height", "24");
+  arrowSvg.setAttribute("viewbox", "0 0 24 24");
+  arrowSvg.setAttribute("fill", "none");
+
+  arrowPath.setAttribute(
+    "d",
+    "M18.707 12.707L17.293 11.293L13 15.586V6H11V15.586L6.70697 11.293L5.29297 12.707L12 19.414L18.707 12.707Z"
+  );
+  arrowPath.setAttribute("fill", "#F25410");
+  arrowSvg.appendChild(arrowPath);
+  arrowElm.appendChild(arrowSvg);
+
   // document.body.appendChild(baseWrapper);
+  containerElm.appendChild(arrowElm);
   containerElm.appendChild(cursorElm);
   document.body.appendChild(containerElm);
   document.body.appendChild(highlightElm);
@@ -94,7 +124,7 @@ export function createCursorElements(): [CursorDOMElements, () => void] {
     document.body.removeChild(containerElm);
   };
 
-  return [{ cursorElm, highlightElm, containerElm }, cleanup];
+  return [{ cursorElm, highlightElm, containerElm, arrowSvg }, cleanup];
 }
 /**
 
@@ -126,9 +156,12 @@ export const updateCursorDOM: CursorDOMRenderer = ({
 
   const isHoveringText = hoverTarget?.type === HoverTargetType.TEXT;
   const isHoveringTargetBig = hoverTarget?.type === HoverTargetType.TARGET_BIG;
+  const isHoveringTargetArrow =
+    hoverTarget?.type === HoverTargetType.TARGET_ARROW;
   const isHoveringTargetSmall =
     hoverTarget?.type === HoverTargetType.TARGET_SMALL;
-  const isHovering = isHoveringTargetBig || isHoveringTargetSmall;
+  const isHovering =
+    isHoveringTargetBig || isHoveringTargetSmall || isHoveringTargetArrow;
 
   const maxSkewAmount = isHoveringText ? 5 : 12;
   const maxSkewSensitivity = isHoveringText ? 2 : 4;
@@ -201,6 +234,11 @@ export const updateCursorDOM: CursorDOMRenderer = ({
     if (isHoveringTargetSmall) {
       return 0;
     }
+
+    if (isHoveringTargetArrow) {
+      return 0;
+    }
+
     return 1;
   })();
 
@@ -237,4 +275,12 @@ export const updateCursorDOM: CursorDOMRenderer = ({
     // x: cursorPosX,
     // y: cursorPosY,
   });
+
+  const svgScale = isHoveringTargetArrow ? 1 : 0;
+  const targetRotation = hoverTarget?.target.getAttribute("angle");
+  const targetRotationInt = targetRotation && parseInt(targetRotation);
+  const svgRotate = targetRotationInt
+    ? skewXAmount + targetRotationInt
+    : skewXAmount;
+  DOMElements.arrowSvg.style.transform = `translate(-30%,-25%) scale(${svgScale}) rotate(${svgRotate}deg)`;
 };
