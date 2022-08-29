@@ -77,7 +77,7 @@ export function createCursorElements(): [CursorDOMElements, () => void] {
     transitionDuration: ".3s,.3s,.2s,.2s,.2s",
     transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
     // backgroundColor: `#F25410`,
-    border: "2px dashed #F25410",
+    border: "1px dashed #F25410",
     boxSizing: "border-box",
     // borderRadius: "4px",
     zIndex: "1000",
