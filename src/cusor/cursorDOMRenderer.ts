@@ -5,6 +5,7 @@ import { stylesheet } from "./stylesheet";
 export interface CursorDOMElements {
   cursorElm: HTMLDivElement;
   highlightElm: HTMLDivElement;
+  containerElm: HTMLDivElement;
 }
 
 /**
@@ -14,43 +15,51 @@ export interface CursorDOMElements {
  */
 export function createCursorElements(): [CursorDOMElements, () => void] {
   // hide cursor
-  const baseWrapper = document.createElement("div");
+  // const baseWrapper = document.createElement("div");
 
-  baseWrapper.classList.add("persist");
-  baseWrapper.setAttribute("persist-id", "cursor-base-wrapper");
-  baseWrapper.setAttribute("persist-permanent", "true");
+  // baseWrapper.classList.add("persist");
+  // baseWrapper.setAttribute("persist-id", "cursor-base-wrapper");
+  // baseWrapper.setAttribute("persist-permanent", "true");
 
-  stylesheet(baseWrapper, {
-    position: "fixed",
-    left: "0px",
-    top: "0px",
-    bottom: "0px",
-    right: "0px",
-    cursor: "none",
-    zIndex: "-1",
-  });
+  // stylesheet(baseWrapper, {
+  //   position: "fixed",
+  //   left: "0px",
+  //   top: "0px",
+  //   bottom: "0px",
+  //   right: "0px",
+  //   cursor: "none",
+  //   zIndex: "-1",
+  // });
 
   // hide cursor on the background
   stylesheet(document.body, {
     cursor: "none",
   });
 
-  // the base element of the cursor
-  const cursorElm = document.createElement("div");
-  cursorElm.setAttribute("persist-id", "cursor");
-  cursorElm.setAttribute("persist-permanent", "true");
-  stylesheet(cursorElm, {
+  const containerElm = document.createElement("div");
+  containerElm.setAttribute("persist-id", "cursor");
+  containerElm.setAttribute("persist-permanent", "true");
+  stylesheet(containerElm, {
     position: "fixed",
     left: "0px",
     top: "0px",
+    pointerEvents: "none",
+    // borderRadius: "4px",
+    zIndex: "10000",
+  });
+
+  // the base element of the cursor
+  const cursorElm = document.createElement("div");
+  stylesheet(cursorElm, {
+    // position: "fixed",
+    // left: "0px",
+    // top: "0px",
     pointerEvents: "none",
     opacity: "0",
     willChange: "width,height,transform,opacity",
     transitionProperty: "width,height,transform,opacity",
     transitionDuration: ".2s,.2s,.1s,.2s",
     transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
-    // borderRadius: "4px",
-    zIndex: "10000",
   });
 
   const highlightElm = document.createElement("div");
@@ -73,17 +82,19 @@ export function createCursorElements(): [CursorDOMElements, () => void] {
     zIndex: "1000",
   });
 
-  document.body.appendChild(baseWrapper);
-  document.body.appendChild(cursorElm);
+  // document.body.appendChild(baseWrapper);
+  containerElm.appendChild(cursorElm);
+  document.body.appendChild(containerElm);
   document.body.appendChild(highlightElm);
 
   const cleanup = () => {
-    document.body.removeChild(baseWrapper);
-    document.body.removeChild(cursorElm);
+    // document.body.removeChild(baseWrapper);
+    containerElm.removeChild(cursorElm);
     document.body.removeChild(highlightElm);
+    document.body.removeChild(containerElm);
   };
 
-  return [{ cursorElm, highlightElm }, cleanup];
+  return [{ cursorElm, highlightElm, containerElm }, cleanup];
 }
 /**
 
@@ -101,15 +112,14 @@ export const updateCursorDOM: CursorDOMRenderer = ({
   hidden,
   hoverTarget,
   isMouseDown,
-  useTouchInput
+  useTouchInput,
 }: CursorState) => {
-
   if (useTouchInput.value === true) {
     stylesheet(DOMElements.highlightElm, {
-      opacity: "0"
+      opacity: "0",
     });
     stylesheet(DOMElements.cursorElm, {
-      opacity: "0"
+      opacity: "0",
     });
     return;
   }
@@ -194,14 +204,19 @@ export const updateCursorDOM: CursorDOMRenderer = ({
     return 1;
   })();
 
+  stylesheet(DOMElements.containerElm, {
+    x: cursorPosX,
+    y: cursorPosY,
+  });
+
   stylesheet(DOMElements.highlightElm, {
     // backgroundColor:
     //   isHoveringTargetBig || isHoveringTargetSmall
     //     ? "rgba(242, 84,16, 0)"
     //     : "rgba(242, 84, 16, 1)",
-    opacity: isHoveringTargetBig || isHoveringTargetSmall ? "1" : "0",
     x: highlightElmBox.x,
     y: highlightElmBox.y,
+    opacity: isHoveringTargetBig || isHoveringTargetSmall ? "1" : "0",
     skewX: skewXAmount / 3,
     skewY: skewYAmount / 3,
     scaleX: isMouseDown ? 0.9 : 1,
@@ -219,7 +234,7 @@ export const updateCursorDOM: CursorDOMRenderer = ({
     height: `${height}px`,
     skewX: skewXAmount,
     skewY: skewYAmount,
-    x: cursorPosX,
-    y: cursorPosY,
+    // x: cursorPosX,
+    // y: cursorPosY,
   });
 };

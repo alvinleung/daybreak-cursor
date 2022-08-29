@@ -85,7 +85,8 @@ function setupCursorState(
  * @returns [CursorState, CursorCleanup]
  */
 
-const isTouchDevice: any = (navigator.maxTouchPoints || 'ontouchstart' in document.documentElement);
+const isTouchDevice: any =
+  navigator.maxTouchPoints || "ontouchstart" in document.documentElement;
 
 export function setupCursor() {
   const [allCursorElm, removeAllCursorElm] = createCursorElements();
@@ -110,7 +111,7 @@ export function setupCursor() {
       width: DEFAULT_SIZE,
       height: DEFAULT_SIZE,
       DOMElements: allCursorElm,
-      useTouchInput: useTouchInput
+      useTouchInput: useTouchInput,
     },
     updateCursorDOM
   );
@@ -134,77 +135,94 @@ export function setupCursor() {
     );
 
     const textCursorSelector = buildSelector({
-      include: ".hover-target-text, .body-fractul,.body-founders, .caption,p,h1,h2,h3",
+      include:
+        ".hover-target-text, .body-fractul,.body-founders, .caption,p,h1,h2,h3",
       exclude:
         ".hover-target-small, .hover-target-big, a *, .hover-target-small *",
     });
-    const cleanupTextCursor = createHoverState(textCursorSelector, {
-      onMouseEnter: (target) => {
-        if (target.style.opacity === "0" || target.style.visibility === "hidden") return;
+    const cleanupTextCursor = createHoverState(
+      textCursorSelector,
+      {
+        onMouseEnter: (target) => {
+          if (
+            target.style.opacity === "0" ||
+            target.style.visibility === "hidden"
+          )
+            return;
 
-        const lineHeight = parseInt(getComputedStyle(target).fontSize);
-        mutateCursorState({
-          width: clamp(lineHeight * 0.06, DEFAULT_SIZE_TEXT, 12),
-          height: lineHeight,
-          hoverTarget: {
-            type: HoverTargetType.TEXT,
-            bounds: null,
-          },
-        });
+          const lineHeight = parseInt(getComputedStyle(target).fontSize);
+          mutateCursorState({
+            width: clamp(lineHeight * 0.06, DEFAULT_SIZE_TEXT, 12),
+            height: lineHeight,
+            hoverTarget: {
+              type: HoverTargetType.TEXT,
+              bounds: null,
+            },
+          });
+        },
+        onMouseLeave: () => {
+          mutateCursorState({
+            width: DEFAULT_SIZE,
+            height: DEFAULT_SIZE,
+            hoverTarget: null,
+          });
+        },
       },
-      onMouseLeave: () => {
-        mutateCursorState({
-          width: DEFAULT_SIZE,
-          height: DEFAULT_SIZE,
-          hoverTarget: null,
-        });
-      },
-    }, useTouchInput);
+      useTouchInput
+    );
 
     const linkSelector = buildSelector({
       include: ".hover-target-small, a",
       exclude: ".hover-target-big",
     });
-    const cleanupLink = createHoverState(linkSelector, {
-      onMouseEnter: (target) => {
-        const bounds = target.getBoundingClientRect();
-        target.style.color = "#f25410";
-        target.style.cursor = "none";
-        mutateCursorState({
-          width: DEFAULT_SIZE,
-          height: DEFAULT_SIZE,
-          hoverTarget: {
-            type: HoverTargetType.TARGET_SMALL,
-            bounds: bounds,
-          },
-        });
+    const cleanupLink = createHoverState(
+      linkSelector,
+      {
+        onMouseEnter: (target) => {
+          const bounds = target.getBoundingClientRect();
+          target.style.color = "#f25410";
+          target.style.cursor = "none";
+          mutateCursorState({
+            width: DEFAULT_SIZE,
+            height: DEFAULT_SIZE,
+            hoverTarget: {
+              type: HoverTargetType.TARGET_SMALL,
+              bounds: bounds,
+            },
+          });
+        },
+        onMouseLeave: (target) => {
+          target.style.removeProperty("color");
+          target.style.removeProperty("cursor");
+          mutateCursorState({ hoverTarget: null });
+        },
       },
-      onMouseLeave: (target) => {
-        target.style.removeProperty("color");
-        target.style.removeProperty("cursor");
-        mutateCursorState({ hoverTarget: null });
-      },
-    }, useTouchInput);
+      useTouchInput
+    );
 
     const linkAreaSelector = buildSelector({
       include: ".hover-target-big, .project, .next-up-overlay",
       exclude: ".hover-target-small",
     });
-    const cleanupLinkArea = createHoverState(linkAreaSelector, {
-      onMouseEnter: (target) => {
-        const bounds = target.getBoundingClientRect();
+    const cleanupLinkArea = createHoverState(
+      linkAreaSelector,
+      {
+        onMouseEnter: (target) => {
+          const bounds = target.getBoundingClientRect();
 
-        mutateCursorState({
-          hoverTarget: {
-            type: HoverTargetType.TARGET_BIG,
-            bounds: bounds,
-          },
-        });
+          mutateCursorState({
+            hoverTarget: {
+              type: HoverTargetType.TARGET_BIG,
+              bounds: bounds,
+            },
+          });
+        },
+        onMouseLeave: (target) => {
+          mutateCursorState({ hoverTarget: null });
+        },
       },
-      onMouseLeave: (target) => {
-        mutateCursorState({ hoverTarget: null });
-      },
-    }, useTouchInput);
+      useTouchInput
+    );
 
     return () => {
       cleanupLinkArea();
@@ -229,58 +247,66 @@ export function setupCursor() {
     cleanupHoverState = setupHoverStates();
   }
 
-  const cleaupIsMouseDown = setupIsMouseDown({
-    onMouseDown: () => {
-      mutateCursorState({ isMouseDown: true });
+  const cleaupIsMouseDown = setupIsMouseDown(
+    {
+      onMouseDown: () => {
+        mutateCursorState({ isMouseDown: true });
+      },
+      onMouseUp: () => {
+        mutateCursorState({ isMouseDown: false });
+      },
     },
-    onMouseUp: () => {
-      mutateCursorState({ isMouseDown: false });
-    },
-  }, useTouchInput);
+    useTouchInput
+  );
 
-  const cleanupOffscreenDetector = detectOffscreen({
-    onEnterScreen: (e: MouseEvent) => {
-      mutateCursorState({
-        x: e.clientX,
-        y: e.clientY,
-        hidden: false,
-      });
+  const cleanupOffscreenDetector = detectOffscreen(
+    {
+      onEnterScreen: (e: MouseEvent) => {
+        mutateCursorState({
+          x: e.clientX,
+          y: e.clientY,
+          hidden: false,
+        });
+      },
+      onExitScreen: () => {
+        mutateCursorState({
+          hidden: true,
+        });
+      },
     },
-    onExitScreen: () => {
-      mutateCursorState({
-        hidden: true,
-      });
-    },
-  }, useTouchInput);
+    useTouchInput
+  );
 
-  const cleanupMouseMoveListeners = observeMouseMove({
-    onMouseMove: (e: MouseEvent) => {
-      const prevX = cursorState.x;
-      const prevY = cursorState.y;
-      const x = e.clientX;
-      const y = e.clientY;
-      const velX = x - prevX;
-      const velY = y - prevY;
+  const cleanupMouseMoveListeners = observeMouseMove(
+    {
+      onMouseMove: (e: MouseEvent) => {
+        const prevX = cursorState.x;
+        const prevY = cursorState.y;
+        const x = e.clientX;
+        const y = e.clientY;
+        const velX = x - prevX;
+        const velY = y - prevY;
 
-      mutateCursorState({
-        prevX: prevX,
-        prevY: prevY,
-        x: x,
-        y: y,
-        velX: velX,
-        velY: velY,
-      });
+        mutateCursorState({
+          prevX: prevX,
+          prevY: prevY,
+          x: x,
+          y: y,
+          velX: velX,
+          velY: velY,
+        });
+      },
+      onMouseStop: () => {
+        mutateCursorState({
+          prevX: cursorState.x,
+          prevY: cursorState.y,
+          velX: 0,
+          velY: 0,
+        });
+      },
     },
-    onMouseStop: () => {
-      mutateCursorState({
-        prevX: cursorState.x,
-        prevY: cursorState.y,
-        velX: 0,
-        velY: 0,
-      });
-    },
-  }, useTouchInput);
-
+    useTouchInput
+  );
 
   const switchTouchAndMouse = (e: PointerEvent) => {
     if (e.pointerType === "mouse") {
@@ -289,11 +315,11 @@ export function setupCursor() {
     if (e.pointerType === "touch") {
       useTouchInput.value = true;
     }
-  }
+  };
   document.body.addEventListener("pointerdown", switchTouchAndMouse);
 
   function cleanup() {
-    document.body.addEventListener('pointerdown', switchTouchAndMouse);
+    document.body.addEventListener("pointerdown", switchTouchAndMouse);
     removeAllCursorElm();
     cleanupHoverState();
     cleanupOffscreenDetector();
@@ -301,5 +327,5 @@ export function setupCursor() {
     cleaupIsMouseDown();
   }
 
-  return { refershCursorTargets: refreshHoverTargets, cleanupCursor: cleanup, };
+  return { refershCursorTargets: refreshHoverTargets, cleanupCursor: cleanup };
 }
