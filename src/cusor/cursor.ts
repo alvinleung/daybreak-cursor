@@ -253,6 +253,31 @@ export function setupCursor() {
       },
       useTouchInput
     );
+    
+    const arrowLinkRightSelector = buildSelector({
+      include: ".hover-target-arrow-right",
+      exclude: ".hover-target-small",
+    });
+    const cleanupArrowRightLink = createHoverState(
+      arrowLinkRightSelector,
+      {
+        onMouseEnter: (target) => {
+          const bounds = target.getBoundingClientRect();
+
+          mutateCursorState({
+            hoverTarget: {
+              type: HoverTargetType.TARGET_ARROW_RIGHT,
+              bounds: bounds,
+              target,
+            },
+          });
+        },
+        onMouseLeave: (target) => {
+          mutateCursorState({ hoverTarget: null });
+        },
+      },
+      useTouchInput
+    );
 
     return () => {
       const cleanup = () => {
@@ -260,6 +285,7 @@ export function setupCursor() {
         cleanupLink();
         cleanupTextCursor();
         cleanupArrowLink();
+        cleanupArrowRightLink();
       };
 
       // just straight up execute cleanup if no hover target
