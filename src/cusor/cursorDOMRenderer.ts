@@ -7,6 +7,7 @@ export interface CursorDOMElements {
   highlightElm: HTMLDivElement;
   containerElm: HTMLDivElement;
   arrowSvg: SVGSVGElement;
+  arrowSvgRight: SVGSVGElement;
 }
 
 /**
@@ -110,8 +111,38 @@ export function createCursorElements(): [CursorDOMElements, () => void] {
   arrowPath.setAttribute("fill", "#F25410");
   arrowSvg.appendChild(arrowPath);
   arrowElm.appendChild(arrowSvg);
+  
+  
+  const arrowElmRight = document.createElement("div");
+  arrowElmRight.style.position = "relative";
+  
+  const arrowSvgRight = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "svg"
+  );
+  arrowSvgRight.style.position = "absolute";
+  arrowSvgRight.style.transform = "translate(-30%,-25%) scale(0)";
+  arrowSvgRight.style.transition = "transform .2s cubic-bezier(0.22, 1, 0.36, 1)";
+
+  const arrowPathRight = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "path"
+  );
+  arrowSvgRight.setAttribute("width", "24");
+  arrowSvgRight.setAttribute("height", "24");
+  arrowSvgRight.setAttribute("viewbox", "0 0 24 24");
+  arrowSvgRight.setAttribute("fill", "none");
+
+  arrowPathRight.setAttribute(
+    "d",
+    "M47.9999 24L42.3439 29.656L59.5159 46.828L21.1719 46.828L21.1719 54.828L59.5159 54.828L42.3439 72L47.9999 77.656L74.8279 50.828L47.9999 24Z"
+  );
+  arrowPathRight.setAttribute("fill", "#F25410");
+  arrowSvgRight.appendChild(arrowPathRight);
+  arrowElmRight.appendChild(arrowSvgRight);
 
   // document.body.appendChild(baseWrapper);
+  containerElm.appendChild(arrowElmRight);
   containerElm.appendChild(arrowElm);
   containerElm.appendChild(cursorElm);
   document.body.appendChild(containerElm);
@@ -124,7 +155,7 @@ export function createCursorElements(): [CursorDOMElements, () => void] {
     document.body.removeChild(containerElm);
   };
 
-  return [{ cursorElm, highlightElm, containerElm, arrowSvg }, cleanup];
+  return [{ cursorElm, highlightElm, containerElm, arrowSvg, arrowSvgRight }, cleanup];
 }
 /**
 
@@ -158,10 +189,12 @@ export const updateCursorDOM: CursorDOMRenderer = ({
   const isHoveringTargetBig = hoverTarget?.type === HoverTargetType.TARGET_BIG;
   const isHoveringTargetArrow =
     hoverTarget?.type === HoverTargetType.TARGET_ARROW;
+  const isHoveringTargetArrowRight =
+    hoverTarget?.type === HoverTargetType.TARGET_ARROW_RIGHT;
   const isHoveringTargetSmall =
     hoverTarget?.type === HoverTargetType.TARGET_SMALL;
   const isHovering =
-    isHoveringTargetBig || isHoveringTargetSmall || isHoveringTargetArrow;
+    isHoveringTargetBig || isHoveringTargetSmall || isHoveringTargetArrow || isHoveringTargetArrowRight ;
 
   const maxSkewAmount = isHoveringText ? 5 : 12;
   const maxSkewSensitivity = isHoveringText ? 2 : 4;
@@ -238,6 +271,9 @@ export const updateCursorDOM: CursorDOMRenderer = ({
     if (isHoveringTargetArrow) {
       return 0;
     }
+    if (isHoveringTargetArrowRight) {
+      return 0;
+    }
 
     return 1;
   })();
@@ -283,4 +319,12 @@ export const updateCursorDOM: CursorDOMRenderer = ({
     ? skewXAmount + targetRotationInt
     : skewXAmount;
   DOMElements.arrowSvg.style.transform = `translate(-30%,-25%) scale(${svgScale}) rotate(${svgRotate}deg)`;
+  
+  const svgScaleRight = isHoveringTargetArrowRight ? (isMouseDown ? 1.8 : 2) : 0;
+  const targetRotationRight = hoverTarget?.target.getAttribute("angle");
+  const targetRotationIntRight = targetRotationRight && parseInt(targetRotationRight);
+  const svgRotateRight = targetRotationIntRight
+    ? skewXAmount + targetRotationIntRight
+    : skewXAmount;
+  DOMElements.arrowSvgRight.style.transform = `translate(-30%,-25%) scale(${svgScaleRight}) rotate(${svgRotateRight}deg)`;
 };
