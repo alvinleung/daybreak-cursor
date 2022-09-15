@@ -8,6 +8,7 @@ export interface CursorDOMElements {
   containerElm: HTMLDivElement;
   arrowSvg: SVGSVGElement;
   arrowSvgRight: SVGSVGElement;
+  arrowSvgSplit: SVGSVGElement;
 }
 
 /**
@@ -140,9 +141,43 @@ export function createCursorElements(): [CursorDOMElements, () => void] {
   arrowPathRight.setAttribute("fill", "#F25410");
   arrowSvgRight.appendChild(arrowPathRight);
   arrowElmRight.appendChild(arrowSvgRight);
+  
+  
+  const arrowElmSplit = document.createElement("div");
+  arrowElmSplit.style.position = "relative";
+  
+  const arrowSvgSplit = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "svg"
+  );
+  arrowSvgSplit.style.position = "absolute";
+  arrowSvgSplit.style.transform = "translate(-30%,-25%) scale(0)";
+  arrowSvgSplit.style.transition = "transform .2s cubic-bezier(0.22, 1, 0.36, 1)";
+
+  const arrowPathSplit = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "path"
+  );
+  arrowSvgSplit.setAttribute("width", "24");
+  arrowSvgSplit.setAttribute("height", "24");
+  arrowSvgSplit.setAttribute("viewbox", "0 0 24 24");
+  arrowSvgSplit.setAttribute("fill", "none");
+
+  arrowPathSplit.setAttribute(
+    "d",
+    "M18.8269 6.71229L17.7363 7.8029L21.0475 11.1141L13.6538 11.1141L13.6538 12.6567L21.0475 12.6567L17.7363 15.9679L18.8269 17.0585L24 11.8854L18.8269 6.71229Z"
+  );
+  arrowPathSplit.setAttribute(
+    "d",
+    "M4.94361 17.0585L6.03422 15.9678L2.72304 12.6567L10.1167 12.6567L10.1167 11.1141L2.72304 11.1141L6.03422 7.80289L4.94361 6.71228L-0.229485 11.8854L4.94361 17.0585Z"
+  );
+  arrowPathSplit.setAttribute("fill", "#F25410");
+  arrowSvgSplit.appendChild(arrowPathSplit);
+  arrowElmSplit.appendChild(arrowSvgSplit);
 
   // document.body.appendChild(baseWrapper);
   containerElm.appendChild(arrowElmRight);
+  containerElm.appendChild(arrowElmSplit);
   containerElm.appendChild(arrowElm);
   containerElm.appendChild(cursorElm);
   document.body.appendChild(containerElm);
@@ -155,7 +190,7 @@ export function createCursorElements(): [CursorDOMElements, () => void] {
     document.body.removeChild(containerElm);
   };
 
-  return [{ cursorElm, highlightElm, containerElm, arrowSvg, arrowSvgRight }, cleanup];
+  return [{ cursorElm, highlightElm, containerElm, arrowSvg, arrowSvgRight, arrowSvgSplit }, cleanup];
 }
 /**
 
@@ -191,10 +226,12 @@ export const updateCursorDOM: CursorDOMRenderer = ({
     hoverTarget?.type === HoverTargetType.TARGET_ARROW;
   const isHoveringTargetArrowRight =
     hoverTarget?.type === HoverTargetType.TARGET_ARROW_RIGHT;
+  const isHoveringTargetArrowSplit =
+    hoverTarget?.type === HoverTargetType.TARGET_ARROW_SPLIT;
   const isHoveringTargetSmall =
     hoverTarget?.type === HoverTargetType.TARGET_SMALL;
   const isHovering =
-    isHoveringTargetBig || isHoveringTargetSmall || isHoveringTargetArrow || isHoveringTargetArrowRight ;
+    isHoveringTargetBig || isHoveringTargetSmall || isHoveringTargetArrow || isHoveringTargetArrowRight || isHoveringTargetArrowSplit;
 
   const maxSkewAmount = isHoveringText ? 5 : 12;
   const maxSkewSensitivity = isHoveringText ? 2 : 4;
@@ -274,6 +311,9 @@ export const updateCursorDOM: CursorDOMRenderer = ({
     if (isHoveringTargetArrowRight) {
       return 0;
     }
+    if (isHoveringTargetArrowSplit) {
+      return 0;
+    }
 
     return 1;
   })();
@@ -327,4 +367,12 @@ export const updateCursorDOM: CursorDOMRenderer = ({
     ? skewXAmount + targetRotationIntRight
     : skewXAmount;
   DOMElements.arrowSvgRight.style.transform = `translate(-30%,-25%) scale(${svgScaleRight}) rotate(${svgRotateRight}deg)`;
+  
+  const svgScaleSplit = isHoveringTargetArrowSplit ? (isMouseDown ? 1.8 : 2) : 0;
+  const targetRotationSplit = hoverTarget?.target.getAttribute("angle");
+  const targetRotationIntSplit = targetRotationSplit && parseInt(targetRotationSplit);
+  const svgRotateSplit = targetRotationIntSplit
+    ? skewXAmount + targetRotationIntSplit
+    : skewXAmount;
+  DOMElements.arrowSvgSplit.style.transform = `translate(-30%,-25%) scale(${svgScaleSplit}) rotate(${svgRotateSplit}deg)`;
 };
