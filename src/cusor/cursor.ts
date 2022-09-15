@@ -19,6 +19,7 @@ export enum HoverTargetType {
   TARGET_BIG, // for an area like a photo
   TARGET_SMALL, // for text link
   TARGET_ARROW,
+  TARGET_ARROW_RIGHT,
 }
 
 export interface HoverTarget {
