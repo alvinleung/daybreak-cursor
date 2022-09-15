@@ -166,11 +166,10 @@ export function createCursorElements(): [CursorDOMElements, () => void] {
   arrowPathSplit.setAttribute(
     "d",
     "M18.8269 6.71229L17.7363 7.8029L21.0475 11.1141L13.6538 11.1141L13.6538 12.6567L21.0475 12.6567L17.7363 15.9679L18.8269 17.0585L24 11.8854L18.8269 6.71229Z"
-  );
-  arrowPathSplit.setAttribute(
     "d",
     "M4.94361 17.0585L6.03422 15.9678L2.72304 12.6567L10.1167 12.6567L10.1167 11.1141L2.72304 11.1141L6.03422 7.80289L4.94361 6.71228L-0.229485 11.8854L4.94361 17.0585Z"
   );
+
   arrowPathSplit.setAttribute("fill", "#F25410");
   arrowSvgSplit.appendChild(arrowPathSplit);
   arrowElmSplit.appendChild(arrowSvgSplit);
