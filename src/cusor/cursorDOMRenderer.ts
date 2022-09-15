@@ -135,7 +135,7 @@ export function createCursorElements(): [CursorDOMElements, () => void] {
 
   arrowPathRight.setAttribute(
     "d",
-    "M47.9999 24L42.3439 29.656L59.5159 46.828L21.1719 46.828L21.1719 54.828L59.5159 54.828L42.3439 72L47.9999 77.656L74.8279 50.828L47.9999 24Z"
+    "M12 5.99994L10.586 7.41394L14.879 11.7069L5.29297 11.7069L5.29297 13.7069L14.879 13.7069L10.586 17.9999L12 19.4139L18.707 12.7069L12 5.99994Z"
   );
   arrowPathRight.setAttribute("fill", "#F25410");
   arrowSvgRight.appendChild(arrowPathRight);
