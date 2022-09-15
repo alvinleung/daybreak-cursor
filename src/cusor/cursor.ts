@@ -20,6 +20,7 @@ export enum HoverTargetType {
   TARGET_SMALL, // for text link
   TARGET_ARROW,
   TARGET_ARROW_RIGHT,
+  TARGET_ARROW_SPLIT,
 }
 
 export interface HoverTarget {
@@ -279,6 +280,31 @@ export function setupCursor() {
       },
       useTouchInput
     );
+    
+    const arrowLinkSplitSelector = buildSelector({
+      include: ".hover-target-arrow-split",
+      exclude: ".hover-target-small",
+    });
+    const cleanupArrowSplitLink = createHoverState(
+      arrowLinkSplitSelector,
+      {
+        onMouseEnter: (target) => {
+          const bounds = target.getBoundingClientRect();
+
+          mutateCursorState({
+            hoverTarget: {
+              type: HoverTargetType.TARGET_ARROW_SPLIT,
+              bounds: bounds,
+              target,
+            },
+          });
+        },
+        onMouseLeave: (target) => {
+          mutateCursorState({ hoverTarget: null });
+        },
+      },
+      useTouchInput
+    );
 
     return () => {
       const cleanup = () => {
@@ -287,6 +313,7 @@ export function setupCursor() {
         cleanupTextCursor();
         cleanupArrowLink();
         cleanupArrowRightLink();
+        cleanupArrowSplitLink();
       };
 
       // just straight up execute cleanup if no hover target
