@@ -6,7 +6,7 @@ h3 {
   font-weight: 400;
 }
 
-* {
+.cursor-items * {
   opacity: 0;
 }
 
